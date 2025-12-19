@@ -383,12 +383,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -495,12 +497,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -607,12 +611,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -722,12 +728,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -833,12 +841,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -949,12 +959,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -1058,12 +1070,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -1168,12 +1182,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -1280,12 +1296,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>
@@ -1391,12 +1409,14 @@ const ShopGridCol3 = () => {
                                       strokeWidth={2}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
-                                      className="feather feather-plus"
+                                      className="feather feather-plus d-none d-md-inline"
+                                      aria-hidden="true"
                                     >
                                       <line x1={12} y1={5} x2={12} y2={19} />
                                       <line x1={5} y1={12} x2={19} y2={12} />
-                                    </svg>{" "}
-                                    Purchase
+                                    </svg>
+                                    <span className="d-md-none">Purchase</span>
+                                    <span className="d-none d-md-inline"> Purchase</span>
                                   </Link>
                                 </div>
                               </div>

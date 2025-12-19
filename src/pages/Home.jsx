@@ -58,6 +58,7 @@ const Home = () => {
   const [popularProducts, setPopularProducts] = useState([]);
   const [dailyBestSells, setDailyBestSells] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAllCategories, setShowAllCategories] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
 
   const toggleVisibility = () => {
@@ -310,7 +311,7 @@ const Home = () => {
                                 Introduced a new model for online grocery shopping
                                 and convenient home delivery.
                               </p>
-                              <Link to="#!" className="btn btn-dark mt-3">
+                              <Link to="/Shop" className="btn btn-dark mt-3">
                                 Shop Now{" "}
                                 <i className="feather-icon icon-arrow-right ms-1" />
                               </Link>
@@ -344,7 +345,7 @@ const Home = () => {
                                 Free Shipping to First-Time Customers Only, After
                                 promotions and discounts are applied.
                               </p>
-                              <Link to="#!" className="btn btn-dark mt-3">
+                              <Link to="/Shop" className="btn btn-dark mt-3">
                                 Shop Now{" "}
                                 <i className="feather-icon icon-arrow-right ms-1" />
                               </Link>
@@ -478,7 +479,7 @@ const Home = () => {
                                   </span>
                                 </span>
                               </div>
-                              <Link to="#" className="btn btn-dark">
+                              <Link to="/Shop" className="btn btn-dark">
                                 Shop Now
                               </Link>
                             </div>
@@ -509,7 +510,7 @@ const Home = () => {
                                 Refresh your day <br />
                                 the fruity way
                               </p>
-                              <Link to="#" className="btn btn-dark mt-2">
+                              <Link to="/Shop" className="btn btn-dark mt-2">
                                 Shop Now
                               </Link>
                             </div>
@@ -539,7 +540,7 @@ const Home = () => {
                                 <br />
                                 summer today
                               </p>
-                              <Link to="#" className="btn btn-dark">
+                              <Link to="/Shop" className="btn btn-dark">
                                 Shop Now
                               </Link>
                             </div>
@@ -554,13 +555,20 @@ const Home = () => {
             </>
             <>
               {/* section category */}
-              <section className="my-lg-14 my-8">
-                <div className="container ">
+              <section className="my-lg-14 my-8 categories-section-lg" style={{ marginTop: '3rem' }}>
+                <style>{`
+                  @media (min-width: 992px) {
+                    .categories-section-lg {
+                      margin-top: 5rem !important;
+                    }
+                  }
+                `}</style>
+                <div className="container">
                   <div className="row">
                     <div className="col-12">
                       <div className="mb-6">
                         {/* heading    */}
-                        <div className="section-head text-center mt-8">
+                        <div className="section-head text-center mt-8 mt-lg-5">
                           <h3
                             className="h3style"
                             data-title="Shop Popular Categories"
@@ -585,40 +593,74 @@ const Home = () => {
                           <p className="text-muted">No categories available</p>
                         </div>
                       ) : (
-                        popularCategories.map((category) => (
-<div key={category._id} className="col-lg-2 col-md-4 col-6 fade-zoom">
-                            <Zoom>
-                              <div className="text-center mb-10">
-                                <Link to={`/Shop?category_id=${category._id}`}>
-                                  <div 
-                                    className="card-image rounded-circle d-flex align-items-center justify-content-center overflow-hidden"
-                                    style={{ 
-                                      width: '120px', 
-                                      height: '120px', 
-                                      margin: '0 auto',
-                                      backgroundColor: '#f8f9fa',
-                                      border: '2px solid #0aad0a',
-                                      backgroundImage: category.image ? `url(${category.image})` : 'none',
-                                      backgroundSize: 'cover',
-                                      backgroundPosition: 'center'
-                                    }}
-                                  >
-                                    {!category.image && (
-                                      <span style={{ fontSize: '48px' }}>🛒</span>
-                                    )}
-                                  </div>
-                                </Link>
-                                <div className="mt-4">
-                                  <h5 className="fs-6 mb-0">
-                                    <Link to={`/Shop?category_id=${category._id}`} className="text-inherit">
-                                      {category.name}
+                        <>
+                          {/* Show all categories on large screens, limited on md/sm */}
+                          {popularCategories.map((category, index) => {
+                            // On md and sm devices, show only first 6 categories initially
+                            // On lg and above, always show all
+                            const isHiddenOnMdSm = !showAllCategories && index >= 6;
+                            
+                            return (
+                              <div 
+                                key={category._id} 
+                                className={`col-lg-2 col-md-4 col-6 fade-zoom ${isHiddenOnMdSm ? 'd-none d-lg-block' : ''}`}
+                              >
+                                <Zoom>
+                                  <div className="text-center mb-10">
+                                    <Link to={`/Shop?category_id=${category._id}`}>
+                                      <div 
+                                        className="card-image rounded-circle d-flex align-items-center justify-content-center overflow-hidden"
+                                        style={{ 
+                                          width: '120px', 
+                                          height: '120px', 
+                                          margin: '0 auto',
+                                          backgroundColor: '#f8f9fa',
+                                          border: '2px solid #0aad0a',
+                                          backgroundImage: category.image ? `url(${category.image})` : 'none',
+                                          backgroundSize: 'cover',
+                                          backgroundPosition: 'center'
+                                        }}
+                                      >
+                                        {!category.image && (
+                                          <span style={{ fontSize: '48px' }}>🛒</span>
+                                        )}
+                                      </div>
                                     </Link>
-                                  </h5>
-                                </div>
+                                    <div className="mt-4">
+                                      <h5 className="fs-6 mb-0">
+                                        <Link to={`/Shop?category_id=${category._id}`} className="text-inherit">
+                                          {category.name}
+                                        </Link>
+                                      </h5>
+                                    </div>
+                                  </div>
+                                </Zoom>
                               </div>
-                            </Zoom>
-                          </div>
-                        ))
+                            );
+                          })}
+                          
+                          {/* Explore More Categories button - Only show on md and sm devices */}
+                          {popularCategories.length > 6 && (
+                            <div className="col-12 d-sm-block d-lg-none text-center mt-4">
+                              <button
+                                className="btn btn-outline-primary"
+                                onClick={() => setShowAllCategories(!showAllCategories)}
+                              >
+                                {showAllCategories ? (
+                                  <>
+                                    <i className="bi bi-chevron-up me-2"></i>
+                                    Show Less Categories
+                                  </>
+                                ) : (
+                                  <>
+                                    <i className="bi bi-chevron-down me-2"></i>
+                                    Explore More Categories
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
@@ -649,7 +691,7 @@ const Home = () => {
                                 Get Upto <span className="fw-bold">30%</span>{" "}
                                 Off
                               </p>
-                              <Link to="#!" className="btn btn-dark">
+                              <Link to="/Shop" className="btn btn-dark">
                                 Shop Now
                               </Link>
                             </div>
@@ -676,7 +718,7 @@ const Home = () => {
                                 Get Upto <span className="fw-bold">25%</span>{" "}
                                 Off
                               </p>
-                              <Link to="#!" className="btn btn-dark">
+                              <Link to="/Shop" className="btn btn-dark">
                                 Shop Now
                               </Link>
                             </div>
@@ -723,7 +765,7 @@ const Home = () => {
                           <p className="text-white">
                             Get the best deal before close.
                           </p>
-                          <Link to="#!" className="btn btn-primary">
+                          <Link to="/Shop" className="btn btn-primary">
                             Shop Now{" "}
                             <i className="feather-icon icon-arrow-right ms-1" />
                           </Link>

@@ -24,6 +24,7 @@ function Dropdown() {
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [limit, setLimit] = useState(50); // Default limit
   const [sortBy, setSortBy] = useState('newest'); // Default sort
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
   // Fetch popular categories for sidebar - Only once on page load
   useEffect(() => {
@@ -204,10 +205,10 @@ function Dropdown() {
       
 
       <div className="row">
-        {/* Left Sidebar - Categories */}
-        <div className="col-lg-3 col-md-4 mb-4">
+        {/* Left Sidebar - Categories - Hidden on sm and md, visible on lg */}
+        <div className="col-lg-3 col-md-4 mb-4 d-none d-lg-block">
           <div className="card border-0 shadow-sm sticky-top" style={{ top: '30px' }}>
-            <div className="card-header bg-primary text-white">
+            <div className="card-header bg-primary text-white" style={{ marginTop: '2rem' }}>
               <h5 className="mb-0">
                 <i className="bi bi-grid me-2"></i>
                 Categories
@@ -268,12 +269,99 @@ function Dropdown() {
           </div>
         </div>
 
+        {/* Categories Dropdown for sm and md devices */}
+        <div className="col-12 d-lg-none mb-3">
+          <div className="card border-0 shadow-sm">
+            <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center" style={{ marginTop: '2rem' }}>
+              <h5 className="mb-0">
+                <i className="bi bi-grid me-2"></i>
+                Categories
+              </h5>
+              <button
+                className="btn btn-sm btn-light"
+                onClick={() => setShowAllCategories(!showAllCategories)}
+                type="button"
+              >
+                {showAllCategories ? (
+                  <>
+                    <i className="bi bi-chevron-up me-1"></i>
+                    Hide Categories
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-chevron-down me-1"></i>
+                    Explore More Categories
+                  </>
+                )}
+              </button>
+            </div>
+            {showAllCategories && (
+              <div className="card-body p-0">
+                {categoriesLoading ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                ) : popularCategories.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-muted mb-0">No categories available</p>
+                  </div>
+                ) : (
+                  <ul className="list-group list-group-flush">
+                    <li 
+                      className={`list-group-item list-group-item-action ${!categoryIdParam ? 'active bg-primary text-white' : ''}`}
+                      style={{ cursor: 'pointer', border: 'none' }}
+                      onClick={() => {
+                        setCategoryName('All Products');
+                        navigate('/Shop');
+                        setShowAllCategories(false);
+                      }}
+                    >
+                      <i className="bi bi-grid me-2"></i>
+                      All Products
+                    </li>
+                    {popularCategories.map((category) => (
+                      <li
+                        key={category._id}
+                        className={`list-group-item list-group-item-action ${
+                          categoryIdParam === category._id ? 'active bg-primary text-white' : ''
+                        }`}
+                        style={{ cursor: 'pointer', border: 'none' }}
+                        onClick={() => {
+                          handleCategoryClick(category._id);
+                          setShowAllCategories(false);
+                        }}
+                      >
+                        <div className="d-flex align-items-center">
+                          {category.image && (
+                            <img
+                              src={category.image}
+                              alt={category.name}
+                              className="rounded me-2"
+                              style={{ width: '30px', height: '30px', objectFit: 'cover' }}
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/30';
+                              }}
+                            />
+                          )}
+                          <span>{category.name}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Main Content Column */}
         <div className="col-lg-9 col-md-8">
           {/* card */}
-          <div className="card mb-4 bg-light border-0">
+          <div className="card mb-4 bg-light border-0" style={{ marginTop: '2rem' }}>
             {/* card body */}
-            <div className=" card-body p-9">
+            <div className="card-body p-9">
               <h1 className="mb-0">{categoryName}</h1>
             </div>
           </div>
@@ -480,12 +568,14 @@ function Dropdown() {
                           strokeWidth={2}
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="feather feather-plus"
+                          className="feather feather-plus d-none d-md-inline"
+                          aria-hidden="true"
                         >
                           <line x1={12} y1={5} x2={12} y2={19} />
                           <line x1={5} y1={12} x2={19} y2={12} />
-                        </svg>{" "}
-                        Purchase
+                        </svg>
+                        <span className="d-md-none">Purchase</span>
+                        <span className="d-none d-md-inline"> Purchase</span>
                       </button>
                     </div>
                   </div>
