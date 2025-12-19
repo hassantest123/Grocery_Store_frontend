@@ -355,7 +355,7 @@ const Home = () => {
                       </div>
                     </div>
                     <Link
-                      className="carousel-control-prev"
+                      className="carousel-control-prev d-none d-md-block"
                       to="#carouselExampleFade"
                       role="button"
                       data-bs-slide="prev"
@@ -382,7 +382,7 @@ const Home = () => {
                       <span className="visually-hidden">Previous</span>
                     </Link>
                     <Link
-                      className="carousel-control-next"
+                      className="carousel-control-next d-none d-md-block"
                       to="#carouselExampleFade"
                       role="button"
                       data-bs-slide="next"
