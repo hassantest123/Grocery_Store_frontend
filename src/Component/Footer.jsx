@@ -33,8 +33,8 @@ const Footer = () => {
             <h3>About</h3>
             <ul className="list-unstyled nav-links">
               <li><Link to="/AboutUs">About us</Link></li>
-              <li><Link to="/AboutUs">Clients</Link></li>
-              <li><Link to="/AboutUs">Services</Link></li>
+              <li><Link to="/Clients">Clients</Link></li>
+              <li><Link to="/Services">Services</Link></li>
               <li><Link to="/Shop">Best sellers</Link></li>
               <li><Link to="/Blog">Blog</Link></li>
               <li><Link to="/Contact">Contact</Link></li>

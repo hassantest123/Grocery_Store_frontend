@@ -363,15 +363,15 @@ const Header = () => {
                 About us
               </Link>
               <Link 
-                to="/AboutUs" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                to="/Clients" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Clients' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 Clients
               </Link>
               <Link 
-                to="/AboutUs" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                to="/Services" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Services' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 Services
@@ -547,16 +547,16 @@ const Header = () => {
                   About us
                 </Link>
                 <Link 
-                  to="/AboutUs" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                  to="/Clients" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Clients' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
                   Clients
                 </Link>
                 <Link 
-                  to="/AboutUs" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                  to="/Services" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Services' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >

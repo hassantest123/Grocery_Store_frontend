@@ -14,6 +14,8 @@ import AboutUs from "./pages/About/AboutUs";
 import Blog from "./pages/About/Blog";
 import BlogCategory from "./pages/About/BlogCategory";
 import Contact from "./pages/About/Contact";
+import Clients from "./pages/About/Clients";
+import Services from "./pages/About/Services";
 // Shop pages
 import Shop from "./pages/Shop/Shop";
 import ShopGridCol3 from "./pages/Shop/ShopGridCol3";
@@ -75,6 +77,8 @@ const App = () => {
           <Route path="/BlogCategory" element={<BlogCategory />} />
           <Route path="/Contact" element={<Contact />} />
           <Route path="/AboutUs" element={<AboutUs />} />
+          <Route path="/Clients" element={<Clients />} />
+          <Route path="/Services" element={<Services />} />
           {/* Footer Elements */}
           <Route path="/Faq" element={<FAQ />} />
           <Route path="/Coupons" element={<Coupons />} />
