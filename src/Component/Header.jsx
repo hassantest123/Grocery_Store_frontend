@@ -5,11 +5,12 @@ import productimage2 from '../images/product-img-2.jpg'
 import productimage3 from '../images/product-img-3.jpg'
 import productimage4 from '../images/product-img-4.jpg'
 import productimage5 from '../images/product-img-5.jpg'
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import useCartStore from "../store/cartStore";
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const cartItems = useCartStore((state) => state.items);
   const totalItems = useCartStore((state) => {
     return state.items.reduce((total, item) => total + item.quantity, 0);
@@ -84,6 +85,63 @@ const Header = () => {
 
   return (
     <div>
+      {/* Animated Underline Styles */}
+      <style>{`
+        .nav-link-animated {
+          position: relative;
+          display: inline-block;
+          text-decoration: none;
+          overflow: hidden;
+        }
+        
+        .nav-link-animated::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background-color: #0aad0a;
+          transition: width 0.3s ease-in-out;
+        }
+        
+        .nav-link-animated:hover::after,
+        .nav-link-animated.active::after {
+          width: 100%;
+        }
+        
+        .nav-link-animated:hover {
+          color: #0aad0a !important;
+        }
+        
+        /* Mobile navigation animated underline */
+        .mobile-nav-link-animated {
+          position: relative;
+          display: inline-block;
+          text-decoration: none;
+          overflow: hidden;
+        }
+        
+        .mobile-nav-link-animated::after {
+          content: '';
+          position: absolute;
+          bottom: 8px;
+          left: 0;
+          width: 0;
+          height: 2px;
+          background-color: #0aad0a;
+          transition: width 0.3s ease-in-out;
+        }
+        
+        .mobile-nav-link-animated:hover::after,
+        .mobile-nav-link-animated.active::after {
+          width: 100%;
+        }
+        
+        .mobile-nav-link-animated:hover {
+          color: #0aad0a !important;
+        }
+      `}</style>
       {/* Top Header Section - Commented Out */}
       {/* This section contains the "Super Value Deals" banner with wishlist, user, and cart icons */}
       {/* 
@@ -287,30 +345,79 @@ const Header = () => {
       */}
       <nav className="navbar navbar-expand-lg navbar-light sticky-top">
         <div className="container d-flex justify-content-between align-items-center w-100">
-          {/* Store Logo/Brand Name and Dashboard Link - Left Side */}
-          <div className="d-flex align-items-center gap-3">
+          {/* Store Logo/Brand Name - Left Side */}
+          <div className="d-flex align-items-center">
             <Link className="navbar-brand d-flex align-items-center" to="/" style={{ textDecoration: 'none' }}>
               <span className="fw-bold" style={{ fontSize: '34px', color: '#0aad0a' }}>
                 Click Mart
               </span>
             </Link>
             
-            {/* Dashboard Link for Admin */}
+            {/* Navigation Menu Items - Close to Click Mart (Desktop Only) */}
+            <div className="d-none d-lg-flex align-items-center gap-4 ms-4">
+              <Link 
+                to="/AboutUs" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
+              >
+                About us
+              </Link>
+              <Link 
+                to="/AboutUs" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
+              >
+                Clients
+              </Link>
+              <Link 
+                to="/AboutUs" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
+              >
+                Services
+              </Link>
+              <Link 
+                to="/Shop" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Shop' ? 'active' : ''}`}
+                style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
+              >
+                Best sellers
+              </Link>
+              <Link 
+                to="/Blog" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Blog' ? 'active' : ''}`}
+                style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
+              >
+                Blog
+              </Link>
+              <Link 
+                to="/Contact" 
+                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Contact' ? 'active' : ''}`}
+                style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+
+          {/* Dashboard, Profile, Cart, and Hamburger Menu - Right Side (All in Same Line) */}
+          <div className="d-flex align-items-center gap-2 gap-md-3">
+            {/* Dashboard Link for Admin - Show on all screens */}
             {isAdmin && (
               <Link
                 to="/AdminDashboard"
-                className="btn btn-outline-primary btn-sm"
+                className="btn btn-outline-primary btn-sm d-flex align-items-center"
                 style={{ 
                   textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  padding: '4px 8px',
+                  fontSize: '14px'
                 }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width={18}
-                  height={18}
+                  width={16}
+                  height={16}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -323,25 +430,21 @@ const Header = () => {
                   <rect x={14} y={14} width={7} height={7} />
                   <rect x={3} y={14} width={7} height={7} />
                 </svg>
-                Dashboard
+                <span className="d-none d-md-inline">Dashboard</span>
               </Link>
             )}
-          </div>
-
-          {/* Create Account Button / Profile Icon and Cart Icon - Right Side */}
-          <div className="d-flex align-items-center gap-3">
             {/* Show Profile Icon if logged in, otherwise show Create Account Button */}
             {isLoggedIn ? (
               <Link
                 to="/MyAccountSetting"
-                className="text-muted"
+                className="text-muted d-flex align-items-center"
                 style={{ textDecoration: 'none' }}
                 title="Profile Settings"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width={28}
-                  height={28}
+                  width={24}
+                  height={24}
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -357,17 +460,19 @@ const Header = () => {
             ) : (
               <Link 
                 to="/MyAccountSignUp" 
-                className="btn btn-primary"
+                className="btn btn-primary btn-sm"
+                style={{ padding: '4px 12px', fontSize: '14px' }}
               >
-                Create Account
+                <span className="d-none d-sm-inline">Create Account</span>
+                <span className="d-sm-none">Sign Up</span>
               </Link>
             )}
             {/* Cart Icon */}
             <Link
-              className="text-muted position-relative"
+              className="text-muted position-relative d-flex align-items-center"
               to="/ShopCart"
               role="button"
-              style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+              style={{ textDecoration: 'none' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -386,12 +491,103 @@ const Header = () => {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
               {totalItems > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" style={{ fontSize: '10px', padding: '2px 5px' }}>
                   {totalItems}
                   <span className="visually-hidden">cart items</span>
                 </span>
               )}
             </Link>
+            {/* Mobile Menu Toggle Button (Hamburger) - Right Corner */}
+            <button
+              className="navbar-toggler d-lg-none"
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-controls="mobileNavMenu"
+              aria-expanded={isOpen}
+              aria-label="Toggle navigation"
+              style={{ border: 'none', padding: '4px 8px', background: 'transparent', marginLeft: '4px' }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={24}
+                height={24}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {isOpen ? (
+                  <>
+                    <line x1={18} y1={6} x2={6} y2={18} />
+                    <line x1={6} y1={6} x2={18} y2={18} />
+                  </>
+                ) : (
+                  <>
+                    <line x1={3} y1={12} x2={21} y2={12} />
+                    <line x1={3} y1={6} x2={21} y2={6} />
+                    <line x1={3} y1={18} x2={21} y2={18} />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Navigation Menu - Collapsible */}
+          <div className={`d-lg-none position-absolute w-100 start-0 top-100 bg-white shadow-lg ${isOpen ? '' : 'd-none'}`} style={{ zIndex: 1000, marginTop: '1px' }}>
+            <div className="container py-3" id="mobileNavMenu">
+              <div className="d-flex flex-column gap-2 py-3">
+                <Link 
+                  to="/AboutUs" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                  style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
+                >
+                  About us
+                </Link>
+                <Link 
+                  to="/AboutUs" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                  style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
+                >
+                  Clients
+                </Link>
+                <Link 
+                  to="/AboutUs" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                  style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
+                >
+                  Services
+                </Link>
+                <Link 
+                  to="/Shop" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Shop' ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                  style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
+                >
+                  Best sellers
+                </Link>
+                <Link 
+                  to="/Blog" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Blog' ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                  style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
+                >
+                  Blog
+                </Link>
+                <Link 
+                  to="/Contact" 
+                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Contact' ? 'active' : ''}`}
+                  onClick={() => setIsOpen(false)}
+                  style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
+                >
+                  Contact
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* All Navigation Menu Items - Commented Out */}
