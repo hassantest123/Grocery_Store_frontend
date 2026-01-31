@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // Components
 import Header from './Component/Header';
 import Footer from "./Component/Footer";
+import ScrollToTopOnRouteChange from "./Component/ScrollToTopOnRouteChange";
 // pages
 import Home from "./pages/Home";
 // About pages
@@ -29,6 +30,7 @@ import SingleShop from "./pages/store/SingleShop";
 // Account pages
 import MyAccountOrder from "./pages/Accounts/MyAccountOrder";
 import MyAccountSetting from "./pages/Accounts/MyAcconutSetting";
+import MyAccountFavorites from "./pages/Accounts/MyAccountFavorites";
 import MyAcconutNotification from "./pages/Accounts/MyAcconutNotification";
 import MyAcconutPaymentMethod from "./pages/Accounts/MyAcconutPaymentMethod";
 import MyAccountAddress from "./pages/Accounts/MyAccountAddress";
@@ -47,6 +49,7 @@ const App = () => {
   return (
     <div style={{ overflowX: 'hidden', maxWidth: '100%', width: '100%' }}>
       <Router>
+        <ScrollToTopOnRouteChange />
         <Header/>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -59,10 +62,11 @@ const App = () => {
           <Route path="/ShopCart" element={<ShopCart />} />
           {/* Store pages */}
           <Route path="/StoreList" element={<StoreList />} />
-          <Route path="/SingleShop" element={<SingleShop />} />
+          <Route path="/SingleShop/:id" element={<SingleShop />} />
           {/* Accounts pages */}
           <Route path="/MyAccountOrder" element={<MyAccountOrder />} />
           <Route path="/MyAccountSetting" element={<MyAccountSetting />} />
+          <Route path="/MyAccountFavorites" element={<MyAccountFavorites />} />
           <Route path="/MyAcconutNotification" element={<MyAcconutNotification />} />
           <Route path="/MyAcconutPaymentMethod" element={<MyAcconutPaymentMethod />} />
           <Route path="/MyAccountAddress" element={<MyAccountAddress />} />

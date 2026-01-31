@@ -26,6 +26,28 @@ const uploadApi = {
   },
 
   /**
+   * Upload multiple images to Cloudinary
+   * @param {File[]} files - Array of image files to upload
+   * @param {string} folder - Optional folder name in Cloudinary (default: 'grocery_store')
+   * @returns {Promise} API response with array of image URLs
+   */
+  uploadMultipleImages: function (files, folder = "grocery_store") {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
+    if (folder) {
+      formData.append("folder", folder);
+    }
+
+    return axiosInstanceFile.request({
+      method: "POST",
+      url: "/api/v1/upload/images",
+      data: formData,
+    });
+  },
+
+  /**
    * Delete an image from Cloudinary
    * @param {string} publicId - Public ID of the image to delete
    * @returns {Promise} API response

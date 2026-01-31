@@ -12,6 +12,7 @@ const MyAccountAddress = () => {
   const [address, setAddress] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Fetch user profile on component mount
   useEffect(() => {
@@ -127,309 +128,327 @@ const MyAccountAddress = () => {
     }
   };
 
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event("authStateChange"));
+    navigate("/");
+  };
+
   return (
-    <div>
-       <>
-            <ScrollToTop/>
-            </>
-      <>
-        <div>
-          {/* section */}
-          <section>
-            {/* container */}
-            <div className="container">
-              {/* row */}
-              <div className="row">
-                {/* col */}
-                <div className="col-12">
-                  <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
-                    {/* heading */}
-                    <h3 className="fs-5 mb-0">Account Setting</h3>
-                    <button
-                      className="btn btn-outline-gray-400 text-muted d-md-none"
-                      type="button"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasAccount"
-                      aria-controls="offcanvasAccount"
-                    >
-                      <i className="fas fa-bars"></i>
-                    </button>
-                  </div>
-                </div>
-                {/* col */}
-                <div className="col-lg-3 col-md-4 col-12 border-end  d-none d-md-block">
-                  <div className="pt-10 pe-lg-10">
-                    {/* nav */}
-                    <ul className="nav flex-column nav-pills nav-pills-dark">
-                      {/* nav item */}
-                      <li className="nav-item">
-                        {/* nav link */}
-                        <Link
-                          className="nav-link "
-                          aria-current="page"
-                          to="/MyAccountOrder"
-                        >
-                          <i className="fas fa-shopping-bag me-2" />
-                          Your Orders
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link " to="/MyAccountSetting">
-                          <i className="fas fa-cog me-2" />
-                          Settings
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link
-                          className="nav-link active"
-                          to="/MyAccountAddress"
-                        >
-                          <i className="fas fa-map-marker-alt me-2" />
-                          Address
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/MyAcconutPaymentMethod">
-                          <i className="fas fa-credit-card me-2" />
-                          Payment Method
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/MyAcconutNotification">
-                          <i className="fas fa-bell me-2" />
-                          Notification
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <hr />
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link " to="/">
-                          <i className="fas fa-sign-out-alt me-2" />
-                          Log out
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="col-lg-9 col-md-8 col-12">
-                  <div>
-                    {loaderStatus ? (
-                      <div className="loader-container">
-                        {/* <PulseLoader loading={loaderStatus} size={50} color="#0aad0a" /> */}
-                        <MagnifyingGlass
-                          visible={true}
-                          height="100"
-                          width="100"
-                          ariaLabel="magnifying-glass-loading"
-                          wrapperStyle={{}}
-                          wrapperclassName="magnifying-glass-wrapper"
-                          glassColor="#c0efff"
-                          color="#0aad0a"
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="p-6 p-lg-10">
-                          <div className="mb-6">
-                            {/* heading */}
-                            <h2 className="mb-0">Address</h2>
-                          </div>
-                          <div className="row">
-                            {/* col */}
-                            <div className="col-lg-8 col-xxl-6 col-12">
-                              {/* form */}
-                              <div className="border p-6 rounded-3">
-                                <div className="d-flex justify-content-between align-items-center mb-4">
-                                  <h5 className="mb-0 text-dark fw-semi-bold">
-                                    <i className="fas fa-map-marker-alt me-2"></i>
-                                    Home Address
-                                  </h5>
-                                  {!isEditing && (
-                                    <button
-                                      className="btn btn-sm btn-outline-primary"
-                                      onClick={handleEdit}
-                                    >
-                                      <i className="fas fa-edit me-1"></i>
-                                      Edit
-                                    </button>
-                                  )}
-                                </div>
-                                
-                                {!isEditing ? (
-                                  <>
-                                    {/* Display address */}
-                                    {user && (
-                                      <div className="mb-4">
-                                        <p className="mb-2">
-                                          <strong>{user.name || "N/A"}</strong>
-                                        </p>
-                                        {address ? (
-                                          <p className="mb-2 text-muted">
-                                            {address.split('\n').map((line, index) => (
-                                              <React.Fragment key={index}>
-                                                {line}
-                                                <br />
-                                              </React.Fragment>
-                                            ))}
-                                          </p>
-                                        ) : (
-                                          <p className="mb-2 text-muted">
-                                            No address provided
-                                          </p>
-                                        )}
-                                        {user.phone && (
-                                          <p className="mb-0 text-muted">
-                                            <i className="fas fa-phone me-2"></i>
-                                            {user.phone}
-                                          </p>
-                                        )}
-                                      </div>
-                                    )}
-                                    {!address && (
-                                      <div className="mb-4">
-                                        <p className="text-muted mb-0">
-                                          You haven't added an address yet. Click Edit to add your address.
-                                        </p>
-                                      </div>
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    {/* Edit form */}
-                                    <form onSubmit={handleSubmit}>
-                                      <div className="mb-4">
-                                        <label className="form-label fw-bold">
-                                          Full Address
-                                        </label>
-                                        <textarea
-                                          className="form-control"
-                                          rows="5"
-                                          placeholder="Enter your complete address (street, city, state, zip code, country)"
-                                          value={address}
-                                          onChange={(e) => setAddress(e.target.value)}
-                                          required
-                                        />
-                                        <small className="form-text text-muted">
-                                          Include street address, city, state, zip code, and country
-                                        </small>
-                                      </div>
-                                      <div className="d-flex gap-2">
-                                        <button
-                                          type="submit"
-                                          className="btn btn-primary"
-                                          disabled={isUpdating}
-                                        >
-                                          {isUpdating ? "Saving..." : "Save Address"}
-                                        </button>
-                                        <button
-                                          type="button"
-                                          className="btn btn-outline-secondary"
-                                          onClick={handleCancel}
-                                          disabled={isUpdating}
-                                        >
-                                          Cancel
-                                        </button>
-                                      </div>
-                                    </form>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
+    <div className="min-h-screen bg-gray-50">
+      <ScrollToTop />
+      
+      <section className="py-8 lg:py-12">
+        <div className="container mx-auto px-4">
+          {/* Mobile Header */}
+          <div className="md:hidden flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Account Setting</h3>
+            <button
+              className="p-2 text-gray-600 hover:text-gray-900"
+              type="button"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Toggle menu"
+            >
+              <i className="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Sidebar Navigation - Desktop */}
+            <div className="hidden md:block w-full md:w-1/4 lg:w-1/5">
+              <div className="pt-4 lg:pt-8 pr-0 lg:pr-8">
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Settings</h4>
+                  <ul className="space-y-1">
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountOrder"
+                      >
+                        <i className="fas fa-shopping-bag w-5 mr-3"></i>
+                        Your Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountSetting"
+                      >
+                        <i className="fas fa-cog w-5 mr-3"></i>
+                        Settings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg"
+                        to="/MyAccountAddress"
+                      >
+                        <i className="fas fa-map-marker-alt w-5 mr-3"></i>
+                        Address
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAcconutPaymentMethod"
+                      >
+                        <i className="fas fa-credit-card w-5 mr-3"></i>
+                        Payment Method
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAcconutNotification"
+                      >
+                        <i className="fas fa-bell w-5 mr-3"></i>
+                        Notification
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountFavorites"
+                      >
+                        <i className="fas fa-heart w-5 mr-3"></i>
+                        Favorites
+                      </Link>
+                    </li>
+                    <li className="pt-2 mt-2 border-t border-gray-200">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                      >
+                        <i className="fas fa-sign-out-alt w-5 mr-3"></i>
+                        Log out
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
-          </section>
-          {/* modal */}
+
+            {/* Main Content */}
+            <div className="w-full md:w-3/4 lg:w-4/5">
+              {loaderStatus ? (
+                <div className="flex justify-center items-center min-h-[400px]">
+                  <MagnifyingGlass
+                    visible={true}
+                    height="100"
+                    width="100"
+                    ariaLabel="magnifying-glass-loading"
+                    wrapperStyle={{}}
+                    wrapperclassName="magnifying-glass-wrapper"
+                    glassColor="#c0efff"
+                    color="#0aad0a"
+                  />
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-sm p-6 lg:p-10">
+                  <div className="mb-6">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Address</h2>
+                  </div>
+
+                  <div className="max-w-2xl">
+                    <div className="border border-gray-200 rounded-xl p-6">
+                      <div className="flex justify-between items-center mb-6">
+                        <h5 className="text-lg font-semibold text-gray-900 flex items-center">
+                          <i className="fas fa-map-marker-alt text-primary mr-2"></i>
+                          Home Address
+                        </h5>
+                        {!isEditing && (
+                          <button
+                            className="px-4 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                            onClick={handleEdit}
+                          >
+                            <i className="fas fa-edit mr-2"></i>
+                            Edit
+                          </button>
+                        )}
+                      </div>
+                      
+                      {!isEditing ? (
+                        <>
+                          {/* Display address */}
+                          {user && (
+                            <div className="space-y-3">
+                              <p className="text-base font-semibold text-gray-900">
+                                {user.name || "N/A"}
+                              </p>
+                              {address ? (
+                                <p className="text-gray-600 whitespace-pre-line">
+                                  {address}
+                                </p>
+                              ) : (
+                                <p className="text-gray-500">
+                                  No address provided
+                                </p>
+                              )}
+                              {user.phone && (
+                                <p className="text-gray-600 flex items-center">
+                                  <i className="fas fa-phone text-primary mr-2"></i>
+                                  {user.phone}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                          {!address && (
+                            <div className="mt-4">
+                              <p className="text-gray-500">
+                                You haven't added an address yet. Click Edit to add your address.
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {/* Edit form */}
+                          <form onSubmit={handleSubmit}>
+                            <div className="mb-6">
+                              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Full Address
+                              </label>
+                              <textarea
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                                rows="5"
+                                placeholder="Enter your complete address (street, city, state, zip code, country)"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                              />
+                              <p className="mt-2 text-sm text-gray-500">
+                                Include street address, city, state, zip code, and country
+                              </p>
+                            </div>
+                            <div className="flex flex-wrap gap-3">
+                              <button
+                                type="submit"
+                                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isUpdating}
+                              >
+                                {isUpdating ? "Saving..." : "Save Address"}
+                              </button>
+                              <button
+                                type="button"
+                                className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={handleCancel}
+                                disabled={isUpdating}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile Menu Overlay */}
+      {showMobileMenu && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setShowMobileMenu(false)}
+        >
           <div
-            className="offcanvas offcanvas-start"
-            tabIndex={-1}
-            id="offcanvasAccount"
-            aria-labelledby="offcanvasAccountLabel"
+            className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* offcanvas header */}
-            <div className="offcanvas-header">
-              <h5 className="offcanvas-title" id="offcanvasAccountLabel">
-                My Account
-              </h5>
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h5 className="text-lg font-semibold text-gray-900">My Account</h5>
               <button
                 type="button"
-                className="btn-close"
-                data-bs-dismiss="offcanvas"
+                className="p-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setShowMobileMenu(false)}
                 aria-label="Close"
-              />
+              >
+                <i className="fas fa-times text-xl"></i>
+              </button>
             </div>
-            {/* offcanvas body */}
-            <div className="offcanvas-body">
-              <ul className="nav flex-column nav-pills nav-pills-dark">
-                {/* nav item */}
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    aria-current="page"
-                    href="/MyAccountOrder"
+            <div className="p-4">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Settings</h4>
+              <ul className="space-y-1">
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountOrder"
+                    onClick={() => setShowMobileMenu(false)}
                   >
-                    <i className="fas fa-shopping-bag me-2" />
+                    <i className="fas fa-shopping-bag w-5 mr-3"></i>
                     Your Orders
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link " href="/MyAccountSetting">
-                    <i className="fas fa-cog me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountSetting"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-cog w-5 mr-3"></i>
                     Settings
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAccountAddress">
-                    <i className="fas fa-map-marker-alt me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg"
+                    to="/MyAccountAddress"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-map-marker-alt w-5 mr-3"></i>
                     Address
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAcconutPaymentMethod">
-                    <i className="fas fa-credit-card me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAcconutPaymentMethod"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-credit-card w-5 mr-3"></i>
                     Payment Method
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAcconutNotification">
-                    <i className="fas fa-bell me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAcconutNotification"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-bell w-5 mr-3"></i>
                     Notification
-                  </a>
+                  </Link>
                 </li>
               </ul>
-              <hr className="my-6" />
+              <hr className="my-4 border-gray-200" />
               <div>
-                {/* nav  */}
-                <ul className="nav flex-column nav-pills nav-pills-dark">
-                  {/* nav item */}
-                  <li className="nav-item">
-                    <a className="nav-link " href="/">
-                      <i className="fas fa-sign-out-alt me-2" />
+                <ul className="space-y-1">
+                  <li>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setShowMobileMenu(false);
+                      }}
+                      className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                    >
+                      <i className="fas fa-sign-out-alt w-5 mr-3"></i>
                       Log out
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      </>
+      )}
     </div>
   );
 };

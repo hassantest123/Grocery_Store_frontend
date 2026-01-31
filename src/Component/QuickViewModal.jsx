@@ -13,7 +13,7 @@ const QuickViewModal = ({ product, show, onClose }) => {
       name: product.name,
       price: product.price,
       originalPrice: product.original_price,
-      image: product.image,
+      image: product.main_image || product.image,
       category: product.category,
       rating: product.rating || 0,
       reviews: product.reviews_count || 0
@@ -59,7 +59,7 @@ const QuickViewModal = ({ product, show, onClose }) => {
                 <div className="col-md-6">
                   <div className="text-center">
                     <img
-                      src={product.image || '/placeholder-image.jpg'}
+                      src={product.main_image || product.image || '/placeholder-image.jpg'}
                       alt={product.name || 'Product'}
                       className="img-fluid rounded"
                       style={{ maxHeight: '400px', objectFit: 'contain' }}
@@ -78,7 +78,7 @@ const QuickViewModal = ({ product, show, onClose }) => {
                     )}
                     
                     {/* Product Name */}
-                    <h3 className="mb-3">{product.name || 'Product Name'}</h3>
+                    <h3 className="mb-3">{product.name || 'Product Name'}{product.unit ? ` (${product.unit})` : ''}</h3>
                     
                     {/* Rating */}
                     <div className="mb-3">

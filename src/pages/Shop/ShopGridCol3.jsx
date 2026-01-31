@@ -14,17 +14,21 @@ import homeApi from "../../Model/Data/Home/Home";
 import useCartStore from "../../store/cartStore";
 import Swal from 'sweetalert2';
 import QuickViewModal from "../../Component/QuickViewModal";
+import Pagination from "../../Component/Pagination";
 
 const ShopGridCol3 = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const categoryIdParam = searchParams.get('category_id');
+  const pageParam = parseInt(searchParams.get('page')) || 1;
   const addItem = useCartStore((state) => state.addItem);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [productCount, setProductCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageParam);
   const [categoryName, setCategoryName] = useState('All Products');
   const [popularCategories, setPopularCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -57,20 +61,22 @@ const ShopGridCol3 = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fetch products by category_id
+  // Fetch products by category_id with pagination
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const response = await productApi.getAllProducts({
           category_id: categoryIdParam || null,
-          limit: 50,
+          page: currentPage,
+          limit: 20,
           sort_by: 'newest',
         });
         
         if (response.status === 200 && response.data.STATUS === "SUCCESSFUL") {
           setProducts(response.data.DB_DATA.products || []);
           setProductCount(response.data.DB_DATA.pagination?.total || 0);
+          setTotalPages(response.data.DB_DATA.pagination?.total_pages || 1);
           
           if (categoryIdParam) {
             const selectedCategory = popularCategories.find(cat => cat._id === categoryIdParam);
@@ -101,10 +107,27 @@ const ShopGridCol3 = () => {
     };
 
     fetchProducts();
-  }, [categoryIdParam, popularCategories]);
+  }, [categoryIdParam, popularCategories, currentPage]);
+
+  // Reset to page 1 when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [categoryIdParam]);
 
   const handleCategoryClick = (categoryId) => {
-    navigate(`/ShopGridCol3?category_id=${categoryId}`);
+    navigate(`/ShopGridCol3?category_id=${categoryId}&page=1`);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    const params = new URLSearchParams();
+    if (categoryIdParam) {
+      params.set('category_id', categoryIdParam);
+    }
+    params.set('page', page);
+    navigate(`/ShopGridCol3?${params.toString()}`);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleAddClick = (product) => {
@@ -113,7 +136,7 @@ const ShopGridCol3 = () => {
       name: product.name,
       price: product.price,
       originalPrice: product.original_price,
-      image: product.image,
+      image: product.main_image || product.image,
       category: product.category,
       rating: product.rating || 0,
       reviews: product.reviews_count || 0
@@ -1424,66 +1447,18 @@ const ShopGridCol3 = () => {
                           </div>
                         </div>
                       </div>
-                      {/* row */}
-                      <div className="row mt-8">
-                        <div className="col">
-                          {/* nav */}
-                          <nav>
-                            <ul className="pagination">
-                              <li className="page-item disabled">
-                                <Link
-                                  className="page-link  mx-1 rounded-3 "
-                                  to="#"
-                                  aria-label="Previous"
-                                >
-                                  <i className="fa fa-chevron-left" />
-                                </Link>
-                              </li>
-                              <li className="page-item ">
-                                <Link
-                                  className="page-link  mx-1 rounded-3 active"
-                                  to="#"
-                                >
-                                  1
-                                </Link>
-                              </li>
-                              <li className="page-item">
-                                <Link
-                                  className="page-link mx-1 rounded-3 text-body"
-                                  to="#"
-                                >
-                                  2
-                                </Link>
-                              </li>
-                              <li className="page-item">
-                                <Link
-                                  className="page-link mx-1 rounded-3 text-body"
-                                  to="#"
-                                >
-                                  ...
-                                </Link>
-                              </li>
-                              <li className="page-item">
-                                <Link
-                                  className="page-link mx-1 rounded-3 text-body"
-                                  to="#"
-                                >
-                                  12
-                                </Link>
-                              </li>
-                              <li className="page-item">
-                                <Link
-                                  className="page-link mx-1 rounded-3 text-body"
-                                  to="#"
-                                  aria-label="Next"
-                                >
-                                  <i className="fa fa-chevron-right" />
-                                </Link>
-                              </li>
-                            </ul>
-                          </nav>
+                      {/* Pagination */}
+                      {!loading && products.length > 0 && (
+                        <div className="row mt-8">
+                          <div className="col">
+                            <Pagination
+                              currentPage={currentPage}
+                              totalPages={totalPages}
+                              onPageChange={handlePageChange}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                       </>
                 </div>
               </div>

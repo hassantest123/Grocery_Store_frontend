@@ -343,56 +343,56 @@ const Header = () => {
         </div>
       </>
       */}
-      <nav className="navbar navbar-expand-lg navbar-light sticky-top">
-        <div className="container d-flex justify-content-between align-items-center w-100">
+      <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+        <div className="container mx-auto px-4 flex justify-between items-center w-full py-3">
           {/* Store Logo/Brand Name - Left Side */}
-          <div className="d-flex align-items-center">
-            <Link className="navbar-brand d-flex align-items-center" to="/" style={{ textDecoration: 'none' }}>
-              <span className="fw-bold" style={{ fontSize: '34px', color: '#0aad0a' }}>
+          <div className="flex items-center">
+            <Link className="flex items-center" to="/" style={{ textDecoration: 'none' }}>
+              <span className="font-bold text-3xl text-primary">
                 Click Mart
               </span>
             </Link>
             
             {/* Navigation Menu Items - Close to Click Mart (Desktop Only) */}
-            <div className="d-none d-lg-flex align-items-center gap-4 ms-4">
+            <div className="hidden lg:flex items-center gap-6 ml-6">
               <Link 
                 to="/AboutUs" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                className={`text-gray-900 font-semibold nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 About us
               </Link>
               <Link 
                 to="/Clients" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Clients' ? 'active' : ''}`}
+                className={`text-gray-900 font-semibold nav-link-animated ${location.pathname === '/Clients' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 Clients
               </Link>
               <Link 
                 to="/Services" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Services' ? 'active' : ''}`}
+                className={`text-gray-900 font-semibold nav-link-animated ${location.pathname === '/Services' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 Services
               </Link>
               <Link 
                 to="/Shop" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Shop' ? 'active' : ''}`}
+                className={`text-gray-900 font-semibold nav-link-animated ${location.pathname === '/Shop' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
-                Best sellers
+                Shop
               </Link>
               <Link 
                 to="/Blog" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Blog' ? 'active' : ''}`}
+                className={`text-gray-900 font-semibold nav-link-animated ${location.pathname === '/Blog' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 Blog
               </Link>
               <Link 
                 to="/Contact" 
-                className={`text-dark fw-bold nav-link-animated ${location.pathname === '/Contact' ? 'active' : ''}`}
+                className={`text-gray-900 font-semibold nav-link-animated ${location.pathname === '/Contact' ? 'active' : ''}`}
                 style={{ textDecoration: 'none', fontSize: '16px', paddingBottom: '4px' }}
               >
                 Contact
@@ -401,18 +401,13 @@ const Header = () => {
           </div>
 
           {/* Dashboard, Profile, Cart, and Hamburger Menu - Right Side (All in Same Line) */}
-          <div className="d-flex align-items-center gap-2 gap-md-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {/* Dashboard Link for Admin - Show on all screens */}
             {isAdmin && (
               <Link
                 to="/AdminDashboard"
-                className="btn btn-outline-primary btn-sm d-flex align-items-center"
-                style={{ 
-                  textDecoration: 'none',
-                  gap: '6px',
-                  padding: '4px 8px',
-                  fontSize: '14px'
-                }}
+                className="flex items-center gap-1.5 px-2 py-1 text-sm border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                style={{ textDecoration: 'none' }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -430,14 +425,14 @@ const Header = () => {
                   <rect x={14} y={14} width={7} height={7} />
                   <rect x={3} y={14} width={7} height={7} />
                 </svg>
-                <span className="d-none d-md-inline">Dashboard</span>
+                <span className="hidden md:inline">Dashboard</span>
               </Link>
             )}
             {/* Show Profile Icon if logged in, otherwise show Create Account Button */}
             {isLoggedIn ? (
               <Link
                 to="/MyAccountSetting"
-                className="text-muted d-flex align-items-center"
+                className="text-gray-500 flex items-center hover:text-primary transition-colors"
                 style={{ textDecoration: 'none' }}
                 title="Profile Settings"
               >
@@ -460,52 +455,53 @@ const Header = () => {
             ) : (
               <Link 
                 to="/MyAccountSignUp" 
-                className="btn btn-primary btn-sm"
-                style={{ padding: '4px 12px', fontSize: '14px' }}
+                className="bg-primary text-white px-3 py-1 text-sm rounded-lg hover:bg-primary-dark transition-colors"
+                style={{ textDecoration: 'none' }}
               >
-                <span className="d-none d-sm-inline">Create Account</span>
-                <span className="d-sm-none">Sign Up</span>
+                <span className="hidden sm:inline">Create Account</span>
+                <span className="sm:hidden">Sign Up</span>
               </Link>
             )}
             {/* Cart Icon */}
             <Link
-              className="text-muted position-relative d-flex align-items-center"
+              className="text-gray-500 relative flex items-center gap-2 hover:text-primary transition-colors"
               to="/ShopCart"
               role="button"
               style={{ textDecoration: 'none' }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={24}
-                height={24}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-shopping-bag"
-              >
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1={3} y1={6} x2={21} y2={6} />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-              {totalItems > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" style={{ fontSize: '10px', padding: '2px 5px' }}>
-                  {totalItems}
-                  <span className="visually-hidden">cart items</span>
-                </span>
-              )}
+              <div className="relative">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="feather feather-shopping-bag"
+                >
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1={3} y1={6} x2={21} y2={6} />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {totalItems}
+                    <span className="sr-only">cart items</span>
+                  </span>
+                )}
+              </div>
             </Link>
             {/* Mobile Menu Toggle Button (Hamburger) - Right Corner */}
             <button
-              className="navbar-toggler d-lg-none"
+              className="lg:hidden border-0 p-1 bg-transparent ml-1 text-gray-600 hover:text-gray-900"
               type="button"
               onClick={() => setIsOpen(!isOpen)}
               aria-controls="mobileNavMenu"
               aria-expanded={isOpen}
               aria-label="Toggle navigation"
-              style={{ border: 'none', padding: '4px 8px', background: 'transparent', marginLeft: '4px' }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -535,12 +531,12 @@ const Header = () => {
           </div>
 
           {/* Mobile Navigation Menu - Collapsible */}
-          <div className={`d-lg-none position-absolute w-100 start-0 top-100 bg-white shadow-lg ${isOpen ? '' : 'd-none'}`} style={{ zIndex: 1000, marginTop: '1px' }}>
-            <div className="container py-3" id="mobileNavMenu">
-              <div className="d-flex flex-column gap-2 py-3">
+          <div className={`lg:hidden absolute w-full left-0 top-full bg-white shadow-lg ${isOpen ? 'block' : 'hidden'}`} style={{ zIndex: 1000, marginTop: '1px' }}>
+            <div className="container mx-auto px-4 py-3" id="mobileNavMenu">
+              <div className="flex flex-col gap-2 py-3">
                 <Link 
                   to="/AboutUs" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
+                  className={`text-gray-900 font-semibold mobile-nav-link-animated ${location.pathname === '/AboutUs' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
@@ -548,7 +544,7 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/Clients" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Clients' ? 'active' : ''}`}
+                  className={`text-gray-900 font-semibold mobile-nav-link-animated ${location.pathname === '/Clients' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
@@ -556,7 +552,7 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/Services" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Services' ? 'active' : ''}`}
+                  className={`text-gray-900 font-semibold mobile-nav-link-animated ${location.pathname === '/Services' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
@@ -564,15 +560,15 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/Shop" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Shop' ? 'active' : ''}`}
+                  className={`text-gray-900 font-semibold mobile-nav-link-animated ${location.pathname === '/Shop' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
-                  Best sellers
+                  Shop
                 </Link>
                 <Link 
                   to="/Blog" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Blog' ? 'active' : ''}`}
+                  className={`text-gray-900 font-semibold mobile-nav-link-animated ${location.pathname === '/Blog' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
@@ -580,7 +576,7 @@ const Header = () => {
                 </Link>
                 <Link 
                   to="/Contact" 
-                  className={`text-dark fw-bold mobile-nav-link-animated ${location.pathname === '/Contact' ? 'active' : ''}`}
+                  className={`text-gray-900 font-semibold mobile-nav-link-animated ${location.pathname === '/Contact' ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                   style={{ textDecoration: 'none', fontSize: '16px', padding: '8px 0' }}
                 >
@@ -963,83 +959,77 @@ const Header = () => {
           */}
         </div>
       </nav>
-  <>
-    <div>
-      {/* Shop Cart */}
-      <div
-        className="offcanvas offcanvas-end"
-        tabIndex={-1}
-        id="offcanvasRight"
-        aria-labelledby="offcanvasRightLabel"
-      >
-        <div className="offcanvas-header border-bottom">
-          <div className="text-start">
-            <h5 id="offcanvasRightLabel" className="mb-0 fs-4">
-              Shop Cart
-            </h5>
-            <small>Location in 382480</small>
+        {/* Shop Cart - Offcanvas Sidebar */}
+        <div
+          className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out hidden"
+          id="offcanvasRight"
+          aria-labelledby="offcanvasRightLabel"
+        >
+        <div className="flex flex-col h-full">
+          <div className="flex justify-between items-center p-4 border-b border-gray-200">
+            <div className="text-left">
+              <h5 id="offcanvasRightLabel" className="mb-0 text-xl font-semibold">
+                Shop Cart
+              </h5>
+              <small className="text-gray-500">Location in 382480</small>
+            </div>
+            <button
+              type="button"
+              className="text-gray-400 hover:text-gray-600 p-2"
+              aria-label="Close"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-          <button
-            type="button"
-            className="btn-close text-reset"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          />
-        </div>
-        <div className="offcanvas-body">
-          <div className="alert alert-danger" role="alert">
-            You’ve got FREE delivery. Start checkout now!
-          </div>
-          <div>
-            <div className="py-3">
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item py-3 px-0 border-top">
-                  <div className="row align-items-center">
-                    <div className="col-2">
+          <div className="flex-1 overflow-y-auto p-4">
+            <div>
+              <div className="py-3">
+                <ul className="divide-y divide-gray-200">
+                <li className="py-3 px-0 border-t border-gray-200">
+                  <div className="flex items-center">
+                    <div className="w-16 flex-shrink-0">
                       <img
                         src={productimage1}
                         alt="Ecommerce"
-                        className="img-fluid"
+                        className="w-full h-auto object-contain rounded"
                       />
                     </div>
-                    <div className="col-5">
-                      <h6 className="mb-0">Organic Banana</h6>
+                    <div className="flex-1 ml-4">
+                      <h6 className="mb-0 font-semibold">Organic Banana</h6>
                       <span>
-                        <small className="text-muted">.98 / lb</small>
+                        <small className="text-gray-500">.98 / lb</small>
                       </span>
-                      <div className="mt-2 small">
-                        {" "}
-                        <Link to="#!" className="text-decoration-none">
-                          {" "}
-                          <span className="me-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={16}
-                              height={16}
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="feather feather-trash-2"
-                            >
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              <line x1={10} y1={11} x2={10} y2={17} />
-                              <line x1={14} y1={11} x2={14} y2={17} />
-                            </svg>
-                          </span>
+                      <div className="mt-2 text-sm">
+                        <Link to="#!" className="text-gray-600 hover:text-red-600 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={16}
+                            height={16}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="feather feather-trash-2 mr-1"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1={10} y1={11} x2={10} y2={17} />
+                            <line x1={14} y1={11} x2={14} y2={17} />
+                          </svg>
                           Remove
                         </Link>
                       </div>
                     </div>
-                    <div className="col-3">
-                      <div className="input-group  flex-nowrap justify-content-center  ">
+                    <div className="w-24 flex justify-center">
+                      <div className="flex items-center border border-gray-300 rounded">
                         <input
                           type="button"
                           defaultValue="-"
-                          className="button-minus form-control  text-center flex-xl-none w-xl-30 w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-l"
                           data-field="quantity"
                         />
                         <input
@@ -1048,68 +1038,64 @@ const Header = () => {
                           max={10}
                           defaultValue={1}
                           name="quantity"
-                          className="quantity-field form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0 "
+                          className="w-12 h-8 text-center border-0 focus:outline-none"
                         />
                         <input
                           type="button"
                           defaultValue="+"
-                          className="button-plus form-control  text-center flex-xl-none w-xl-30  w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-r"
                           data-field="quantity"
                         />
                       </div>
                     </div>
-                    <div className="col-2 text-end">
-                      <span className="fw-bold">Rs 35.00</span>
+                    <div className="w-20 text-right ml-4">
+                      <span className="font-bold">Rs 35.00</span>
                     </div>
                   </div>
                 </li>
-                <li className="list-group-item py-3 px-0">
-                  <div className="row row align-items-center">
-                    <div className="col-2">
+                <li className="py-3 px-0">
+                  <div className="flex items-center">
+                    <div className="w-16 flex-shrink-0">
                       <img
                         src={productimage2}
                         alt="Ecommerce"
-                        className="img-fluid"
+                        className="w-full h-auto object-contain rounded"
                       />
                     </div>
-                    <div className="col-5">
-                      <h6 className="mb-0">Fresh Garlic, 250g</h6>
+                    <div className="flex-1 ml-4">
+                      <h6 className="mb-0 font-semibold">Fresh Garlic, 250g</h6>
                       <span>
-                        <small className="text-muted">250g</small>
+                        <small className="text-gray-500">250g</small>
                       </span>
-                      <div className="mt-2 small">
-                        {" "}
-                        <Link to="#!" className="text-decoration-none">
-                          {" "}
-                          <span className="me-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={16}
-                              height={16}
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="feather feather-trash-2"
-                            >
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              <line x1={10} y1={11} x2={10} y2={17} />
-                              <line x1={14} y1={11} x2={14} y2={17} />
-                            </svg>
-                          </span>
+                      <div className="mt-2 text-sm">
+                        <Link to="#!" className="text-gray-600 hover:text-red-600 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={16}
+                            height={16}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="feather feather-trash-2 mr-1"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1={10} y1={11} x2={10} y2={17} />
+                            <line x1={14} y1={11} x2={14} y2={17} />
+                          </svg>
                           Remove
                         </Link>
                       </div>
                     </div>
-                    <div className="col-3">
-                      <div className="input-group  flex-nowrap justify-content-center  ">
+                    <div className="w-24 flex justify-center">
+                      <div className="flex items-center border border-gray-300 rounded">
                         <input
                           type="button"
                           defaultValue="-"
-                          className="button-minus form-control  text-center flex-xl-none w-xl-30 w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-l"
                           data-field="quantity"
                         />
                         <input
@@ -1118,71 +1104,67 @@ const Header = () => {
                           max={10}
                           defaultValue={1}
                           name="quantity"
-                          className="quantity-field form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0 "
+                          className="w-12 h-8 text-center border-0 focus:outline-none"
                         />
                         <input
                           type="button"
                           defaultValue="+"
-                          className="button-plus form-control  text-center flex-xl-none w-xl-30  w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-r"
                           data-field="quantity"
                         />
                       </div>
                     </div>
-                    <div className="col-2 text-end">
-                      <span className="fw-bold">Rs 20.97</span>
-                      <span className="text-decoration-line-through text-muted small">
+                    <div className="w-20 text-right ml-4">
+                      <span className="font-bold">Rs 20.97</span>
+                      <span className="block line-through text-gray-500 text-sm">
                         Rs 26.97
                       </span>
                     </div>
                   </div>
                 </li>
-                <li className="list-group-item py-3 px-0">
-                  <div className="row row align-items-center">
-                    <div className="col-2">
+                <li className="py-3 px-0">
+                  <div className="flex items-center">
+                    <div className="w-16 flex-shrink-0">
                       <img
                         src={productimage3}
                         alt="Ecommerce"
-                        className="img-fluid"
+                        className="w-full h-auto object-contain rounded"
                       />
                     </div>
-                    <div className="col-5">
-                      <h6 className="mb-0">Fresh Onion, 1kg</h6>
+                    <div className="flex-1 ml-4">
+                      <h6 className="mb-0 font-semibold">Fresh Onion, 1kg</h6>
                       <span>
-                        <small className="text-muted">1 kg</small>
+                        <small className="text-gray-500">1 kg</small>
                       </span>
-                      <div className="mt-2 small">
-                        {" "}
-                        <Link to="#!" className="text-decoration-none">
-                          {" "}
-                          <span className="me-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={16}
-                              height={16}
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="feather feather-trash-2"
-                            >
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              <line x1={10} y1={11} x2={10} y2={17} />
-                              <line x1={14} y1={11} x2={14} y2={17} />
-                            </svg>
-                          </span>
+                      <div className="mt-2 text-sm">
+                        <Link to="#!" className="text-gray-600 hover:text-red-600 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={16}
+                            height={16}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="feather feather-trash-2 mr-1"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1={10} y1={11} x2={10} y2={17} />
+                            <line x1={14} y1={11} x2={14} y2={17} />
+                          </svg>
                           Remove
                         </Link>
                       </div>
                     </div>
-                    <div className="col-3">
-                      <div className="input-group  flex-nowrap justify-content-center  ">
+                    <div className="w-24 flex justify-center">
+                      <div className="flex items-center border border-gray-300 rounded">
                         <input
                           type="button"
                           defaultValue="-"
-                          className="button-minus form-control  text-center flex-xl-none w-xl-30 w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-l"
                           data-field="quantity"
                         />
                         <input
@@ -1191,71 +1173,67 @@ const Header = () => {
                           max={10}
                           defaultValue={1}
                           name="quantity"
-                          className="quantity-field form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0 "
+                          className="w-12 h-8 text-center border-0 focus:outline-none"
                         />
                         <input
                           type="button"
                           defaultValue="+"
-                          className="button-plus form-control  text-center flex-xl-none w-xl-30  w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-r"
                           data-field="quantity"
                         />
                       </div>
                     </div>
-                    <div className="col-2 text-end">
-                      <span className="fw-bold">Rs 25.00</span>
-                      <span className="text-decoration-line-through text-muted small">
+                    <div className="w-20 text-right ml-4">
+                      <span className="font-bold">Rs 25.00</span>
+                      <span className="block line-through text-gray-500 text-sm">
                         Rs 45.00
                       </span>
                     </div>
                   </div>
                 </li>
-                <li className="list-group-item py-3 px-0">
-                  <div className="row row align-items-center">
-                    <div className="col-2">
+                <li className="py-3 px-0">
+                  <div className="flex items-center">
+                    <div className="w-16 flex-shrink-0">
                       <img
                         src={productimage4}
                         alt="Ecommerce"
-                        className="img-fluid"
+                        className="w-full h-auto object-contain rounded"
                       />
                     </div>
-                    <div className="col-5">
-                      <h6 className="mb-0">Fresh Ginger</h6>
+                    <div className="flex-1 ml-4">
+                      <h6 className="mb-0 font-semibold">Fresh Ginger</h6>
                       <span>
-                        <small className="text-muted">250g</small>
+                        <small className="text-gray-500">250g</small>
                       </span>
-                      <div className="mt-2 small">
-                        {" "}
-                        <Link to="#!" className="text-decoration-none">
-                          {" "}
-                          <span className="me-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={16}
-                              height={16}
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="feather feather-trash-2"
-                            >
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              <line x1={10} y1={11} x2={10} y2={17} />
-                              <line x1={14} y1={11} x2={14} y2={17} />
-                            </svg>
-                          </span>
+                      <div className="mt-2 text-sm">
+                        <Link to="#!" className="text-gray-600 hover:text-red-600 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={16}
+                            height={16}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="feather feather-trash-2 mr-1"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1={10} y1={11} x2={10} y2={17} />
+                            <line x1={14} y1={11} x2={14} y2={17} />
+                          </svg>
                           Remove
                         </Link>
                       </div>
                     </div>
-                    <div className="col-3">
-                      <div className="input-group  flex-nowrap justify-content-center  ">
+                    <div className="w-24 flex justify-center">
+                      <div className="flex items-center border border-gray-300 rounded">
                         <input
                           type="button"
                           defaultValue="-"
-                          className="button-minus form-control  text-center flex-xl-none w-xl-30 w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-l"
                           data-field="quantity"
                         />
                         <input
@@ -1264,73 +1242,69 @@ const Header = () => {
                           max={10}
                           defaultValue={1}
                           name="quantity"
-                          className="quantity-field form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0 "
+                          className="w-12 h-8 text-center border-0 focus:outline-none"
                         />
                         <input
                           type="button"
                           defaultValue="+"
-                          className="button-plus form-control  text-center flex-xl-none w-xl-30  w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-r"
                           data-field="quantity"
                         />
                       </div>
                     </div>
-                    <div className="col-2 text-end">
-                      <span className="fw-bold">Rs 39.87</span>
-                      <span className="text-decoration-line-through text-muted small">
+                    <div className="w-20 text-right ml-4">
+                      <span className="font-bold">Rs 39.87</span>
+                      <span className="block line-through text-gray-500 text-sm">
                         Rs 45.00
                       </span>
                     </div>
                   </div>
                 </li>
-                <li className="list-group-item py-3 px-0 border-bottom">
-                  <div className="row row align-items-center">
-                    <div className="col-2">
+                <li className="py-3 px-0 border-b border-gray-200">
+                  <div className="flex items-center">
+                    <div className="w-16 flex-shrink-0">
                       <img
                         src={productimage5}
                         alt="Ecommerce"
-                        className="img-fluid"
+                        className="w-full h-auto object-contain rounded"
                       />
                     </div>
-                    <div className="col-5">
-                      <h6 className="mb-0">
+                    <div className="flex-1 ml-4">
+                      <h6 className="mb-0 font-semibold">
                         Apple Royal Gala, 4 Pieces Box
                       </h6>
                       <span>
-                        <small className="text-muted">4 Apple</small>
+                        <small className="text-gray-500">4 Apple</small>
                       </span>
-                      <div className="mt-2 small">
-                        {" "}
-                        <Link to="#!" className="text-decoration-none">
-                          {" "}
-                          <span className="me-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={16}
-                              height={16}
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="feather feather-trash-2"
-                            >
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              <line x1={10} y1={11} x2={10} y2={17} />
-                              <line x1={14} y1={11} x2={14} y2={17} />
-                            </svg>
-                          </span>
+                      <div className="mt-2 text-sm">
+                        <Link to="#!" className="text-gray-600 hover:text-red-600 flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={16}
+                            height={16}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="feather feather-trash-2 mr-1"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <line x1={10} y1={11} x2={10} y2={17} />
+                            <line x1={14} y1={11} x2={14} y2={17} />
+                          </svg>
                           Remove
                         </Link>
                       </div>
                     </div>
-                    <div className="col-3">
-                      <div className="input-group  flex-nowrap justify-content-center  ">
+                    <div className="w-24 flex justify-center">
+                      <div className="flex items-center border border-gray-300 rounded">
                         <input
                           type="button"
                           defaultValue="-"
-                          className="button-minus form-control  text-center flex-xl-none w-xl-30 w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-l"
                           data-field="quantity"
                         />
                         <input
@@ -1339,151 +1313,151 @@ const Header = () => {
                           max={10}
                           defaultValue={1}
                           name="quantity"
-                          className="quantity-field form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0 "
+                          className="w-12 h-8 text-center border-0 focus:outline-none"
                         />
                         <input
                           type="button"
                           defaultValue="+"
-                          className="button-plus form-control  text-center flex-xl-none w-xl-30  w-xxl-10 px-0  "
+                          className="w-8 h-8 bg-gray-100 text-gray-700 border-0 text-center cursor-pointer hover:bg-gray-200 rounded-r"
                           data-field="quantity"
                         />
                       </div>
                     </div>
-                    <div className="col-2 text-end">
-                      <span className="fw-bold">Rs 39.87</span>
-                      <span className="text-decoration-line-through text-muted small">
-                        Rs 45.00
+                    <div className="w-20 text-right ml-4">
+                      <span className="font-bold">Rs 45.00</span>
+                      <span className="block line-through text-gray-500 text-sm">
+                        Rs 50.00
                       </span>
                     </div>
                   </div>
                 </li>
               </ul>
             </div>
-            <div className="d-grid">
+            <div className="w-full">
               <button
-                className="btn btn-primary btn-lg d-flex justify-content-between align-items-center"
+                className="w-full bg-primary text-white px-6 py-4 rounded-lg hover:bg-primary-dark transition-colors font-semibold flex justify-between items-center text-lg"
                 type="submit"
               >
-                {" "}
-                Go to Checkout <span className="fw-bold">Rs 120.00</span>
+                Go to Checkout <span className="font-bold">Rs 120.00</span>
               </button>
             </div>
           </div>
         </div>
       </div>
-      {/* Modal */}
-      <div
-        className="modal fade"
-        id="locationModal"
-        tabIndex={-1}
-        aria-labelledby="locationModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-sm modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-body p-6">
-              <div className="d-flex justify-content-between align-items-start ">
+        {/* Modal - Location Selector */}
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+          id="locationModal"
+          tabIndex={-1}
+          aria-labelledby="locationModalLabel"
+          aria-hidden="true"
+        >
+          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full mx-4">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h5 className="mb-1" id="locationModalLabel">
+                  <h5 className="mb-1 text-lg font-semibold" id="locationModalLabel">
                     Choose your Delivery Location
                   </h5>
-                  <p className="mb-0 small">
-                    Enter your address and we will specify the offer you
-                    area.{" "}
+                  <p className="mb-0 text-sm text-gray-600">
+                    Enter your address and we will specify the offer you area.
                   </p>
                 </div>
                 <button
                   type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
+                  className="text-gray-400 hover:text-gray-600 p-2"
                   aria-label="Close"
-                />
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
               <div className="my-5">
                 <input
                   type="search"
-                  className="form-control"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Search your area"
                 />
               </div>
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <h6 className="mb-0">Select Location</h6>
+              <div className="flex justify-between items-center mb-2">
+                <h6 className="mb-0 font-semibold">Select Location</h6>
                 <Link
                   to="#"
-                  className="btn btn-outline-gray-400 text-muted btn-sm"
+                  className="px-3 py-1 border border-gray-400 text-gray-600 rounded text-sm hover:bg-gray-100 transition-colors"
                 >
                   Clear All
                 </Link>
               </div>
               <div>
                 <div data-simplebar style={{ height: 300 }}>
-                  <div className="list-group list-group-flush">
+                  <div className="divide-y divide-gray-200">
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action active"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors bg-primary-light"
                     >
                       <span>Alabama</span>
                       <span>Min: Rs 20</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Alaska</span>
                       <span>Min: Rs 30</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Arizona</span>
                       <span>Min: Rs 50</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>California</span>
                       <span>Min: Rs 29</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Colorado</span>
                       <span>Min: Rs 80</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Florida</span>
                       <span>Min: Rs 90</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Arizona</span>
                       <span>Min: Rs 50</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>California</span>
                       <span>Min: Rs 29</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Colorado</span>
                       <span>Min: Rs 80</span>
                     </Link>
                     <Link
                       to="#"
-                      className="list-group-item d-flex justify-content-between align-items-center px-2 py-3 list-group-item-action"
+                      className="flex justify-between items-center px-2 py-3 hover:bg-gray-50 transition-colors"
                     >
                       <span>Florida</span>
                       <span>Min: Rs 90</span>
@@ -1496,8 +1470,6 @@ const Header = () => {
         </div>
       </div>
     </div>
-  </>
-    </div >
   );
 };
 

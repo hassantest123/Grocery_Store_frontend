@@ -9,6 +9,7 @@ const MyAcconutNotification = () => {
   const navigate = useNavigate();
   const [loaderStatus, setLoaderStatus] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [settings, setSettings] = useState({
     email_notifications: {
       weekly_notification: false,
@@ -108,445 +109,428 @@ const MyAcconutNotification = () => {
     }
   };
 
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event("authStateChange"));
+    navigate("/");
+  };
+
   return (
-    <div>
-      <>
-        <ScrollToTop />
-      </>
-      <>
-        {/* section */}
-        <section>
-          {/* container */}
-          <div className="container">
-            {/* row */}
-            <div className="row">
-              {/* col */}
-              <div className="col-12">
-                {/* text */}
-                <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
-                  {/* heading */}
-                  <h3 className="fs-5 mb-0">Account Setting</h3>
-                  {/* btn */}
-                  <button
-                    className="btn btn-outline-gray-400 text-muted d-md-none"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasAccount"
-                    aria-controls="offcanvasAccount"
-                  >
-                    <i className="fas fa-bars"></i>
-                  </button>
-                </div>
-              </div>
-              {/* col */}
-              <div className="col-lg-3 col-md-4 col-12 border-end d-none d-md-block">
-                <div className="pt-10 pe-lg-10">
-                  {/* nav */}
-                  <ul className="nav flex-column nav-pills nav-pills-dark">
-                    {/* nav item */}
-                    <li className="nav-item">
+    <div className="min-h-screen bg-gray-50">
+      <ScrollToTop />
+      
+      <section className="py-8 lg:py-12">
+        <div className="container mx-auto px-4">
+          {/* Mobile Header */}
+          <div className="md:hidden flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Account Setting</h3>
+            <button
+              className="p-2 text-gray-600 hover:text-gray-900"
+              type="button"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Toggle menu"
+            >
+              <i className="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Sidebar Navigation - Desktop */}
+            <div className="hidden md:block w-full md:w-1/4 lg:w-1/5">
+              <div className="pt-4 lg:pt-8 pr-0 lg:pr-8">
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Settings</h4>
+                  <ul className="space-y-1">
+                    <li>
                       <Link
-                        className="nav-link "
-                        aria-current="page"
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
                         to="/MyAccountOrder"
                       >
-                        <i className="fas fa-shopping-bag me-2" />
+                        <i className="fas fa-shopping-bag w-5 mr-3"></i>
                         Your Orders
                       </Link>
                     </li>
-                    {/* nav item */}
-                    <li className="nav-item">
-                      <Link className="nav-link " to="/MyAccountSetting">
-                        <i className="fas fa-cog me-2" />
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountSetting"
+                      >
+                        <i className="fas fa-cog w-5 mr-3"></i>
                         Settings
                       </Link>
                     </li>
-                    {/* nav item */}
-                    <li className="nav-item">
-                      <Link className="nav-link " to="/MyAccountAddress">
-                        <i className="fas fa-map-marker-alt me-2" />
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountAddress"
+                      >
+                        <i className="fas fa-map-marker-alt w-5 mr-3"></i>
                         Address
                       </Link>
                     </li>
-                    {/* nav item */}
-                    <li className="nav-item">
-                      <Link className="nav-link " to="/MyAcconutPaymentMethod">
-                        <i className="fas fa-credit-card me-2" />
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAcconutPaymentMethod"
+                      >
+                        <i className="fas fa-credit-card w-5 mr-3"></i>
                         Payment Method
                       </Link>
                     </li>
-                    {/* nav item */}
-                    <li className="nav-item">
+                    <li>
                       <Link
-                        className="nav-link active"
+                        className="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg"
                         to="/MyAcconutNotification"
                       >
-                        <i className="fas fa-bell me-2" />
+                        <i className="fas fa-bell w-5 mr-3"></i>
                         Notification
                       </Link>
                     </li>
-                    {/* nav item */}
-                    <li className="nav-item">
-                      <hr />
-                    </li>
-                    {/* nav item */}
-                    <li className="nav-item">
-                      <Link className="nav-link " to="../index.html">
-                        <i className="fas fa-sign-out-alt me-2" />
-                        Log out
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountFavorites"
+                      >
+                        <i className="fas fa-heart w-5 mr-3"></i>
+                        Favorites
                       </Link>
+                    </li>
+                    <li className="pt-2 mt-2 border-t border-gray-200">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                      >
+                        <i className="fas fa-sign-out-alt w-5 mr-3"></i>
+                        Log out
+                      </button>
                     </li>
                   </ul>
                 </div>
               </div>
-
-              <div className="col-lg-9 col-md-8 col-12">
-                <div>
-                  {loaderStatus ? (
-                    <div className="loader-container">
-                      <MagnifyingGlass
-                        visible={true}
-                        height="100"
-                        width="100"
-                        ariaLabel="magnifying-glass-loading"
-                        wrapperStyle={{}}
-                        wrapperclassName="magnifying-glass-wrapper"
-                        glassColor="#c0efff"
-                        color="#0aad0a"
-                      />
-                    </div>
-                  ) : (
-                    <>
-                      <div className="p-6 p-lg-10">
-                        {isSaving && (
-                          <div className="alert alert-info mb-4">
-                            <i className="fas fa-spinner fa-spin me-2"></i>
-                            Saving settings...
-                          </div>
-                        )}
-                        <div className="mb-6">
-                          {/* heading */}
-                          <h2 className="mb-0">Notification settings</h2>
-                        </div>
-                        <div className="mb-10">
-                          {/* text */}
-                          <div className="border-bottom pb-3 mb-5">
-                            <h5 className="mb-0">Email Notifications</h5>
-                          </div>
-                          {/* text */}
-                          <div className="d-flex justify-content-between align-items-center mb-6">
-                            <div>
-                              <h6 className="mb-1">Weekly Notification</h6>
-                              <p className="mb-0 ">
-                                Various versions have evolved over the years,
-                                sometimes by accident, sometimes on purpose .
-                              </p>
-                            </div>
-                            {/* checkbox */}
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="weeklyNotification"
-                                checked={settings.email_notifications.weekly_notification}
-                                onChange={(e) => handleSettingChange('email_notifications', 'weekly_notification', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="weeklyNotification"
-                              />
-                            </div>
-                          </div>
-                          <div className="d-flex justify-content-between align-items-center mb-6">
-                            {/* text */}
-                            <div>
-                              <h6 className="mb-1">Account Summary</h6>
-                              <p className="mb-0 pe-12 ">
-                                Pellentesque habitant morbi tristique senectus
-                                et netus et malesuada fames ac turpis eguris eu
-                                sollicitudin massa. Nulla ipsum odio, aliquam in
-                                odio et, fermentum blandit nulla.
-                              </p>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="accountSummary"
-                                checked={settings.email_notifications.account_summary}
-                                onChange={(e) => handleSettingChange('email_notifications', 'account_summary', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="accountSummary"
-                              />
-                            </div>
-                          </div>
-                          <div className="d-flex justify-content-between align-items-center">
-                            {/* text */}
-                            <div>
-                              <h6 className="mb-1">Order Updates</h6>
-                              <p className="mb-0 pe-12 ">
-                                Get notified via email when new products are added to the store.
-                              </p>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="orderUpdatesEmail"
-                                checked={settings.email_notifications.order_updates}
-                                onChange={(e) => handleSettingChange('email_notifications', 'order_updates', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="orderUpdatesEmail"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="mb-10">
-                          {/* heading */}
-                          <div className="border-bottom pb-3 mb-5">
-                            <h5 className="mb-0">Order updates</h5>
-                          </div>
-                          <div className="d-flex justify-content-between align-items-center mb-6">
-                            <div>
-                              {/* heading */}
-                              <h6 className="mb-0">Text messages</h6>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="textMessages"
-                                checked={settings.text_messages.order_updates}
-                                onChange={(e) => handleSettingChange('text_messages', 'order_updates', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="textMessages"
-                              />
-                            </div>
-                          </div>
-                          {/* text */}
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <h6 className="mb-1">Call before checkout</h6>
-                              <p className="mb-0 ">
-                                We'll only call if there are pending changes
-                              </p>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check form-switch">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="callBeforeCheckout"
-                                checked={settings.text_messages.call_before_checkout}
-                                onChange={(e) => handleSettingChange('text_messages', 'call_before_checkout', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="callBeforeCheckout"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="mb-6">
-                          {/* text */}
-                          <div className="border-bottom pb-3 mb-5">
-                            <h5 className="mb-0">Website Notification</h5>
-                          </div>
-                          <div>
-                            {/* form checkbox */}
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="newFollower"
-                                checked={settings.website_notifications.new_follower}
-                                onChange={(e) => handleSettingChange('website_notifications', 'new_follower', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="newFollower"
-                              >
-                                New Follower
-                              </label>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="postLike"
-                                checked={settings.website_notifications.post_like}
-                                onChange={(e) => handleSettingChange('website_notifications', 'post_like', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="postLike"
-                              >
-                                Post Like
-                              </label>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="someoneFollowedPosted"
-                                checked={settings.website_notifications.someone_followed_posted}
-                                onChange={(e) => handleSettingChange('website_notifications', 'someone_followed_posted', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="someoneFollowedPosted"
-                              >
-                                Someone you followed posted
-                              </label>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="postAddedToCollection"
-                                checked={settings.website_notifications.post_added_to_collection}
-                                onChange={(e) => handleSettingChange('website_notifications', 'post_added_to_collection', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="postAddedToCollection"
-                              >
-                                Post added to collection
-                              </label>
-                            </div>
-                            {/* form checkbox */}
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="orderDelivery"
-                                checked={settings.website_notifications.order_delivery}
-                                onChange={(e) => handleSettingChange('website_notifications', 'order_delivery', e.target.checked)}
-                                disabled={isSaving}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="orderDelivery"
-                              >
-                                Order Delivery
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
             </div>
-          </div>
-        </section>
-      </>
-      <>
-        {/* modal */}
-        <div
-          className="offcanvas offcanvas-start"
-          tabIndex={-1}
-          id="offcanvasAccount"
-          aria-labelledby="offcanvasAccountLabel"
-        >
-          {/* offcanvas header */}
-          <div className="offcanvas-header">
-            <h5 className="offcanvas-title" id="offcanvasAccountLabel">
-              My Account
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="offcanvas"
-              aria-label="Close"
-            />
-          </div>
-          {/* offcanvas body */}
-          <div className="offcanvas-body">
-            <ul className="nav flex-column nav-pills nav-pills-dark">
-              {/* nav item */}
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  aria-current="page"
-                  href="/MyAccountOrder"
-                >
-                  <i className="fas fa-shopping-bag me-2" />
-                  Your Orders
-                </a>
-              </li>
-              {/* nav item */}
-              <li className="nav-item">
-                <a className="nav-link " href="/MyAccountSetting">
-                  <i className="fas fa-cog me-2" />
-                  Settings
-                </a>
-              </li>
-              {/* nav item */}
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAccountAddress">
-                  <i className="fas fa-map-marker-alt me-2" />
-                  Address
-                </a>
-              </li>
-              {/* nav item */}
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAcconutPaymentMethod">
-                  <i className="fas fa-credit-card me-2" />
-                  Payment Method
-                </a>
-              </li>
-              {/* nav item */}
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAcconutNotification">
-                  <i className="fas fa-bell me-2" />
-                  Notification
-                </a>
-              </li>
-            </ul>
-            <hr className="my-6" />
-            <div>
-              {/* nav  */}
-              <ul className="nav flex-column nav-pills nav-pills-dark">
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link " href="/">
-                    <i className="fas fa-sign-out-alt me-2" />
-                    Log out
-                  </a>
-                </li>
-              </ul>
+
+            {/* Main Content */}
+            <div className="w-full md:w-3/4 lg:w-4/5">
+              {loaderStatus ? (
+                <div className="flex justify-center items-center min-h-[400px]">
+                  <MagnifyingGlass
+                    visible={true}
+                    height="100"
+                    width="100"
+                    ariaLabel="magnifying-glass-loading"
+                    wrapperStyle={{}}
+                    wrapperclassName="magnifying-glass-wrapper"
+                    glassColor="#c0efff"
+                    color="#0aad0a"
+                  />
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-sm p-6 lg:p-10">
+                  {isSaving && (
+                    <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center text-blue-800">
+                      <i className="fas fa-spinner fa-spin mr-3"></i>
+                      <span className="font-medium">Saving settings...</span>
+                    </div>
+                  )}
+
+                  <div className="mb-8">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Notification settings</h2>
+                  </div>
+
+                  {/* Email Notifications Section */}
+                  <div className="mb-10">
+                    <div className="border-b border-gray-200 pb-3 mb-6">
+                      <h5 className="text-lg font-semibold text-gray-900">Email Notifications</h5>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {/* Weekly Notification */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 pr-4">
+                          <h6 className="text-base font-semibold text-gray-900 mb-2">Weekly Notification</h6>
+                          <p className="text-sm text-gray-600">
+                            Various versions have evolved over the years,
+                            sometimes by accident, sometimes on purpose.
+                          </p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={settings.email_notifications.weekly_notification}
+                            onChange={(e) => handleSettingChange('email_notifications', 'weekly_notification', e.target.checked)}
+                            disabled={isSaving}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+
+                      {/* Account Summary */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 pr-4">
+                          <h6 className="text-base font-semibold text-gray-900 mb-2">Account Summary</h6>
+                          <p className="text-sm text-gray-600">
+                            Pellentesque habitant morbi tristique senectus
+                            et netus et malesuada fames ac turpis eguris eu
+                            sollicitudin massa. Nulla ipsum odio, aliquam in
+                            odio et, fermentum blandit nulla.
+                          </p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={settings.email_notifications.account_summary}
+                            onChange={(e) => handleSettingChange('email_notifications', 'account_summary', e.target.checked)}
+                            disabled={isSaving}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+
+                      {/* Order Updates */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 pr-4">
+                          <h6 className="text-base font-semibold text-gray-900 mb-2">Order Updates</h6>
+                          <p className="text-sm text-gray-600">
+                            Get notified via email when new products are added to the store.
+                          </p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={settings.email_notifications.order_updates}
+                            onChange={(e) => handleSettingChange('email_notifications', 'order_updates', e.target.checked)}
+                            disabled={isSaving}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Order Updates Section */}
+                  <div className="mb-10">
+                    <div className="border-b border-gray-200 pb-3 mb-6">
+                      <h5 className="text-lg font-semibold text-gray-900">Order updates</h5>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {/* Text Messages */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 pr-4">
+                          <h6 className="text-base font-semibold text-gray-900">Text messages</h6>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={settings.text_messages.order_updates}
+                            onChange={(e) => handleSettingChange('text_messages', 'order_updates', e.target.checked)}
+                            disabled={isSaving}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+
+                      {/* Call Before Checkout */}
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 pr-4">
+                          <h6 className="text-base font-semibold text-gray-900 mb-2">Call before checkout</h6>
+                          <p className="text-sm text-gray-600">
+                            We'll only call if there are pending changes
+                          </p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={settings.text_messages.call_before_checkout}
+                            onChange={(e) => handleSettingChange('text_messages', 'call_before_checkout', e.target.checked)}
+                            disabled={isSaving}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Website Notification Section */}
+                  <div className="mb-6">
+                    <div className="border-b border-gray-200 pb-3 mb-6">
+                      <h5 className="text-lg font-semibold text-gray-900">Website Notification</h5>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {/* New Follower */}
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                          checked={settings.website_notifications.new_follower}
+                          onChange={(e) => handleSettingChange('website_notifications', 'new_follower', e.target.checked)}
+                          disabled={isSaving}
+                        />
+                        <span className="ml-3 text-sm font-medium text-gray-900">New Follower</span>
+                      </label>
+
+                      {/* Post Like */}
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                          checked={settings.website_notifications.post_like}
+                          onChange={(e) => handleSettingChange('website_notifications', 'post_like', e.target.checked)}
+                          disabled={isSaving}
+                        />
+                        <span className="ml-3 text-sm font-medium text-gray-900">Post Like</span>
+                      </label>
+
+                      {/* Someone Followed Posted */}
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                          checked={settings.website_notifications.someone_followed_posted}
+                          onChange={(e) => handleSettingChange('website_notifications', 'someone_followed_posted', e.target.checked)}
+                          disabled={isSaving}
+                        />
+                        <span className="ml-3 text-sm font-medium text-gray-900">Someone you followed posted</span>
+                      </label>
+
+                      {/* Post Added to Collection */}
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                          checked={settings.website_notifications.post_added_to_collection}
+                          onChange={(e) => handleSettingChange('website_notifications', 'post_added_to_collection', e.target.checked)}
+                          disabled={isSaving}
+                        />
+                        <span className="ml-3 text-sm font-medium text-gray-900">Post added to collection</span>
+                      </label>
+
+                      {/* Order Delivery */}
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
+                          checked={settings.website_notifications.order_delivery}
+                          onChange={(e) => handleSettingChange('website_notifications', 'order_delivery', e.target.checked)}
+                          disabled={isSaving}
+                        />
+                        <span className="ml-3 text-sm font-medium text-gray-900">Order Delivery</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </>
+      </section>
+
+      {/* Mobile Menu Overlay */}
+      {showMobileMenu && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setShowMobileMenu(false)}
+        >
+          <div
+            className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h5 className="text-lg font-semibold text-gray-900">My Account</h5>
+              <button
+                type="button"
+                className="p-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setShowMobileMenu(false)}
+                aria-label="Close"
+              >
+                <i className="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            <div className="p-4">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Settings</h4>
+              <ul className="space-y-1">
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountOrder"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-shopping-bag w-5 mr-3"></i>
+                    Your Orders
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountSetting"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-cog w-5 mr-3"></i>
+                    Settings
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountAddress"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-map-marker-alt w-5 mr-3"></i>
+                    Address
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAcconutPaymentMethod"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-credit-card w-5 mr-3"></i>
+                    Payment Method
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg"
+                    to="/MyAcconutNotification"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-bell w-5 mr-3"></i>
+                    Notification
+                  </Link>
+                </li>
+              </ul>
+              <hr className="my-4 border-gray-200" />
+              <div>
+                <ul className="space-y-1">
+                  <li>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setShowMobileMenu(false);
+                      }}
+                      className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                    >
+                      <i className="fas fa-sign-out-alt w-5 mr-3"></i>
+                      Log out
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

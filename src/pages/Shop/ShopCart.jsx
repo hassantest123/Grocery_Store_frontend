@@ -18,19 +18,11 @@ const ShopCart = () => {
      removeItem(productId);
    };
 
-   // Check authentication before going to checkout
+   // Navigate to checkout (guest checkout is allowed)
    const handleCheckout = (e) => {
      e.preventDefault();
-     // Check for JWT token in localStorage
-     const jwtToken = localStorage.getItem('jwt') || localStorage.getItem('token') || localStorage.getItem('authToken');
-     
-     if (!jwtToken) {
-       // No token found, redirect to login
-       navigate('/MyAccountSignIn');
-     } else {
-       // Token exists, proceed to checkout
-       navigate('/ShopCheckOut');
-     }
+     // Allow both logged-in and guest users to proceed to checkout
+     navigate('/ShopCheckOut');
    };
  
   return (
@@ -40,63 +32,46 @@ const ShopCart = () => {
           <div>
             {/* section*/}
             {/* section */}
-            <section className="mb-lg-14 mb-8 mt-8">
-            <div className="container">
-              {/* row */}
-              <div className="row">
-                <div className="col-12">
-                  {/* card */}
-                  <div className="card py-1 border-0 mb-8">
-                    <div>
-                      <h1 className="fw-bold">Shop Cart</h1>
-                      <p className="mb-0">Shopping in 382480</p>
-                    </div>
+            <section className="mb-8 lg:mb-14 mt-8">
+            <div className="container mx-auto px-4">
+              <div className="w-full">
+                <div className="bg-white py-1 border-0 mb-8">
+                  <div>
+                    <h1 className="font-bold text-2xl">Shop Cart</h1>
+                    <p className="mb-0 text-gray-600">Shopping in 382480</p>
                   </div>
                 </div>
               </div>
-              {/* row */}
-              <div className="row">
-                <div className="col-lg-8 col-md-7">
+              <div className="flex flex-wrap -mx-4">
+                <div className="w-full lg:w-8/12 md:w-7/12 px-4">
                   <div className="py-3">
-                    {/* alert */}
                     {items.length > 0 ? (
                       <>
-                        <div className="alert alert-danger p-2" role="alert">
-                          You've got FREE delivery. Start{" "}
-                          <Link to="/ShopCheckOut" className="alert-link">
-                            checkout now!
-                          </Link>
-                        </div>
-                        <ul className="list-group list-group-flush">
+                        <ul className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                           {items.map((item, index) => (
                             <li 
                               key={item.id} 
-                              className={`list-group-item py-3 py-lg-0 px-0 ${index === 0 ? 'border-top' : ''}`}
+                              className={`border-b border-gray-200 py-3 lg:py-0 px-4 ${index === 0 ? 'border-t' : ''} last:border-b-0`}
                             >
-                              {/* row */}
-                              <div className="row align-items-center">
-                                <div className="col-3 col-md-2">
-                                  {/* img */}
+                              <div className="flex items-center flex-wrap">
+                                <div className="w-1/4 md:w-1/6 mb-3 md:mb-0">
                                   <img
                                     src={item.image}
                                     alt={item.name}
-                                    className="img-fluid"
+                                    className="w-full h-auto object-contain"
                                   />
                                 </div>
-                                <div className="col-4 col-md-6">
-                                  {/* title */}
-                                  <h6 className="mb-0">{item.name}</h6>
-                                  <span>
-                                    <small className="text-muted">{item.category}</small>
+                                <div className="w-1/2 md:w-1/2 px-2 md:px-4 mb-3 md:mb-0">
+                                  <h6 className="mb-0 font-semibold text-base">{item.name}</h6>
+                                  <span className="block mt-1">
+                                    <small className="text-gray-500">{item.category}</small>
                                   </span>
-                                  {/* text */}
-                                  <div className="mt-2 small">
+                                  <div className="mt-2 text-sm">
                                     <button
                                       onClick={() => handleRemove(item.id)}
-                                      className="text-decoration-none text-inherit border-0 bg-transparent p-0"
-                                      style={{ cursor: 'pointer' }}
+                                      className="text-inherit border-0 bg-transparent p-0 cursor-pointer hover:text-red-600 transition-colors"
                                     >
-                                      <span className="me-1 align-text-bottom">
+                                      <span className="mr-1 align-text-bottom inline-flex items-center">
                                         <svg
                                           xmlns="http://www.w3.org/2000/svg"
                                           width={16}
@@ -107,7 +82,7 @@ const ShopCart = () => {
                                           strokeWidth={2}
                                           strokeLinecap="round"
                                           strokeLinejoin="round"
-                                          className="feather feather-trash-2 text-success"
+                                          className="text-green-600"
                                         >
                                           <polyline points="3 6 5 6 21 6" />
                                           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -115,16 +90,15 @@ const ShopCart = () => {
                                           <line x1={14} y1={11} x2={14} y2={17} />
                                         </svg>
                                       </span>
-                                      <span className="text-muted">Remove</span>
+                                      <span className="text-gray-500">Remove</span>
                                     </button>
                                   </div>
                                 </div>
-                                {/* input group */}
-                                <div className="col-3 col-md-3 col-lg-2">
-                                  <div className="input-group flex-nowrap justify-content-center">
+                                <div className="w-1/4 md:w-1/4 lg:w-1/6 mb-3 md:mb-0">
+                                  <div className="flex items-center justify-center">
                                     <button
                                       type="button"
-                                      className="button-minus form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0"
+                                      className="w-8 h-8 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 flex items-center justify-center font-semibold"
                                       onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                     >
                                       -
@@ -137,22 +111,21 @@ const ShopCart = () => {
                                       value={item.quantity}
                                       onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 1)}
                                       name="quantity"
-                                      className="quantity-field form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0"
+                                      className="w-12 h-8 border-t border-b border-gray-300 text-center text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                     />
                                     <button
                                       type="button"
-                                      className="button-plus form-control text-center flex-xl-none w-xl-30 w-xxl-10 px-0"
+                                      className="w-8 h-8 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 flex items-center justify-center font-semibold"
                                       onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                     >
                                       +
                                     </button>
                                   </div>
                                 </div>
-                                {/* price */}
-                                <div className="col-2 text-lg-end text-start text-md-end col-md-2">
-                                  <span className="fw-bold">Rs {(item.price * item.quantity).toFixed(2)}</span>
+                                <div className="w-full md:w-1/6 text-left md:text-right lg:text-right">
+                                  <span className="font-bold text-base">Rs {(item.price * item.quantity).toFixed(2)}</span>
                                   {item.originalPrice && (
-                                    <div className="text-decoration-line-through text-muted small">
+                                    <div className="line-through text-gray-500 text-sm">
                                       Rs {(item.originalPrice * item.quantity).toFixed(2)}
                                     </div>
                                   )}
@@ -163,68 +136,56 @@ const ShopCart = () => {
                         </ul>
                       </>
                     ) : (
-                      <div className="text-center py-5">
-                        <h5>Your cart is empty</h5>
-                        <p className="text-muted">Add some products to your cart to get started!</p>
-                        <Link to="/Shop" className="btn btn-primary mt-3">
+                      <div className="text-center py-12">
+                        <h5 className="text-xl font-semibold mb-2">Your cart is empty</h5>
+                        <p className="text-gray-500 mb-4">Add some products to your cart to get started!</p>
+                        <Link to="/Shop" className="inline-block bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors mt-3">
                           Continue Shopping
                         </Link>
                       </div>
                     )}
                     {items.length > 0 && (
-                      <>
-                        {/* btn */}
-                        <div className="d-flex justify-content-between mt-4">
-                          <Link to="/Shop" className="btn btn-primary">
-                            Continue Shopping
-                          </Link>
-                        </div>
-                      </>
+                      <div className="flex justify-between mt-4">
+                        <Link to="/Shop" className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                          Continue Shopping
+                        </Link>
+                      </div>
                     )}
                   </div>
                 </div>
-                {/* sidebar */}
                 {items.length > 0 && (
-                  <div className="col-12 col-lg-4 col-md-5">
-                    {/* card */}
-                    <div className="mb-5 card mt-6">
-                      <div className="card-body p-6">
-                        {/* heading */}
-                        <h2 className="h5 mb-4">Summary</h2>
-                        <div className="card mb-2">
-                          {/* list group */}
-                          <ul className="list-group list-group-flush">
-                            {/* list group item */}
-                            <li className="list-group-item d-flex justify-content-between align-items-start">
-                              <div className="me-auto">
+                  <div className="w-full lg:w-4/12 md:w-5/12 px-4 mt-6 lg:mt-0">
+                    <div className="mb-5 bg-white border border-gray-200 rounded-lg shadow-sm mt-6">
+                      <div className="p-6">
+                        <h2 className="text-lg font-semibold mb-4">Summary</h2>
+                        <div className="bg-white border border-gray-200 rounded-lg mb-2">
+                          <ul className="divide-y divide-gray-200">
+                            <li className="flex justify-between items-start py-3 px-4">
+                              <div className="flex-1">
                                 <div>Item Subtotal</div>
                               </div>
                               <span>Rs {getTotalPrice().toFixed(2)}</span>
                             </li>
-                            {/* list group item */}
-                            <li className="list-group-item d-flex justify-content-between align-items-start">
-                              <div className="me-auto">
+                            <li className="flex justify-between items-start py-3 px-4">
+                              <div className="flex-1">
                                 <div>Delivery Fee</div>
                               </div>
-                              <span className="text-success">Free</span>
+                              <span className="font-semibold">Rs 100.00</span>
                             </li>
-                            {/* list group item */}
-                            <li className="list-group-item d-flex justify-content-between align-items-start">
-                              <div className="me-auto">
-                                <div className="fw-bold">Subtotal</div>
+                            <li className="flex justify-between items-start py-3 px-4">
+                              <div className="flex-1">
+                                <div className="font-bold">Subtotal</div>
                               </div>
-                              <div className="fw-bold">Rs {getTotalPrice().toFixed(2)}</div>
+                              <div className="font-bold">Rs {(getTotalPrice() + 100).toFixed(2)}</div>
                             </li>
                           </ul>
                         </div>
-                        {/* btn */}
-                        <div className="d-grid mt-4">
+                        <div className="w-full mt-4">
                           <button
                             onClick={handleCheckout}
-                            className="btn btn-primary btn-lg d-flex justify-content-between align-items-center"
+                            className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors flex justify-between items-center text-lg font-semibold"
                           >
-                            {" "}
-                            Go to Checkout <span className="fw-bold">Rs {getTotalPrice().toFixed(2)}</span>
+                            Go to Checkout <span className="font-bold">Rs {getTotalPrice().toFixed(2)}</span>
                           </button>
                         </div>
                       </div>

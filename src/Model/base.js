@@ -71,7 +71,20 @@ axiosInstance.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized - Token expired or invalid
     if (error.response && error.response.status === 401) {
-      // Clear token and redirect to login
+      // Skip auto-logout for certain endpoints - let the component handle it
+      const requestUrl = error.config?.url || '';
+      const requestMethod = error.config?.method?.toLowerCase() || '';
+      
+      // Skip auto-redirect for:
+      // 1. Rating endpoints - let component handle the error
+      // 2. Order creation endpoint - allows guest checkout without login
+      if (requestUrl.includes('/rate') || 
+          (requestUrl.includes('/api/v1/orders') && requestMethod === 'post')) {
+        // Don't auto-logout for these endpoints, let component handle the error
+        return Promise.reject(error);
+      }
+      
+      // For other endpoints, clear token and redirect to login
       localStorage.removeItem('jwt');
       localStorage.removeItem('user');
       window.location.href = '/MyAccountSignIn';
@@ -95,6 +108,15 @@ axiosInstanceFile.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
+      // Skip auto-redirect for order creation (guest checkout)
+      const requestUrl = error.config?.url || '';
+      const requestMethod = error.config?.method?.toLowerCase() || '';
+      
+      if (requestUrl.includes('/api/v1/orders') && requestMethod === 'post') {
+        // Don't auto-redirect for order creation, let component handle the error
+        return Promise.reject(error);
+      }
+      
       localStorage.removeItem('jwt');
       localStorage.removeItem('user');
       window.location.href = '/MyAccountSignIn';

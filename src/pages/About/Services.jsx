@@ -77,237 +77,231 @@ const Services = () => {
         ) : (
           <>
             <ScrollToTop />
-            <>
-              {/* Hero Section */}
-              <section className="position-relative pt-5">
-                <div
-                  className="position-absolute top-0 start-0 w-100 bg-position-bottom-center bg-size-cover bg-repeat-0"
-                  style={{
-                    backgroundImage: "url(assets/img/about/hero-bg.svg)",
-                  }}
-                >
-                  <div className="d-lg-none" style={{ height: 960 }} />
-                  <div className="d-none d-lg-block" style={{ height: 768 }} />
-                </div>
-                <div className="container position-relative zindex-5 pt-5">
-                  <div className="row">
-                    <div className="col-lg-6">
-                      <Slide direction="down">
-                        <h1 className="pb-2 pb-md-3">Our Services</h1>
-                        <h3 className="pb-2 pb-md-3">Everything You Need for Grocery Shopping</h3>
-                        <p
-                          className="fs-xl pb-4 mb-1 mb-md-2 mb-lg-3"
-                          style={{ maxWidth: 526 }}
-                        >
-                          We provide comprehensive grocery shopping services designed to 
-                          make your life easier. From fast delivery to quality guarantees, 
-                          we've got you covered.
-                        </p>
-                        <div className="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4">
-                          <div className="col">
-                            <h3 className="h2 mb-2">100+</h3>
-                            <p className="mb-0">
-                              <strong>Services</strong>
-                            </p>
-                          </div>
-                          <div className="col">
-                            <h3 className="h2 mb-2">50K+</h3>
-                            <p className="mb-0">
-                              <strong>Happy Customers</strong>
-                            </p>
-                          </div>
-                          <div className="col">
-                            <h3 className="h2 mb-2">99%</h3>
-                            <p className="mb-0">
-                              <strong>Success Rate</strong>
-                            </p>
-                          </div>
-                        </div>
-                      </Slide>
-                    </div>
-                    <div className="col-lg-6 mt-xl-3 pt-5 pt-lg-4">
-                      <div className="row row-cols-2 gx-3 gx-lg-4">
-                        <div className="col pt-lg-5 mt-lg-1">
-                          <Zoom>
-                            <div className="bg-light rounded-3 p-4 mb-3 mb-lg-4 text-center">
-                              <h4 className="text-primary">Quality</h4>
-                              <p className="mb-0">Premium Products</p>
-                            </div>
-                          </Zoom>
-                        </div>
-                        <div className="col">
-                          <Zoom>
-                            <div className="bg-light rounded-3 p-4 mb-3 mb-lg-4 text-center">
-                              <h4 className="text-primary">Speed</h4>
-                              <p className="mb-0">Fast Delivery</p>
-                            </div>
-                          </Zoom>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </>
-
-            <>
-              {/* Services Grid */}
-              <section className="container mt-8 mb-5 pt-lg-5">
-                <div className="row">
-                  <div className="col-12 text-center mb-5">
+            {/* Hero Section */}
+            <section className="relative pt-12 pb-8 lg:pt-20 lg:pb-16">
+              <div
+                className="absolute top-0 left-0 w-full bg-bottom bg-cover bg-no-repeat"
+                style={{
+                  backgroundImage: "url(assets/img/about/hero-bg.svg)",
+                }}
+              >
+                <div className="block lg:hidden" style={{ height: 960 }} />
+                <div className="hidden lg:block" style={{ height: 768 }} />
+              </div>
+              <div className="container mx-auto px-4 relative z-10 pt-12 lg:pt-20">
+                <div className="flex flex-wrap -mx-4">
+                  <div className="w-full lg:w-1/2 px-4">
                     <Slide direction="down">
-                      <h2 className="h1 mb-3">What We Offer</h2>
-                      <p className="lead">Comprehensive grocery shopping solutions</p>
+                      <h1 className="text-4xl lg:text-5xl font-bold pb-4 lg:pb-6">Our Services</h1>
+                      <h3 className="text-2xl lg:text-3xl font-semibold pb-4 lg:pb-6">Everything You Need for Grocery Shopping</h3>
+                      <p
+                        className="text-lg lg:text-xl pb-6 mb-4 lg:mb-6"
+                        style={{ maxWidth: 526 }}
+                      >
+                        We provide comprehensive grocery shopping services designed to 
+                        make your life easier. From fast delivery to quality guarantees, 
+                        we've got you covered.
+                      </p>
+                      <div className="grid grid-cols-3 gap-4 pt-8 lg:pt-12 mt-4 lg:mt-8">
+                        <div>
+                          <h3 className="text-3xl lg:text-4xl font-bold mb-2">100+</h3>
+                          <p className="mb-0 font-semibold">
+                            Services
+                          </p>
+                        </div>
+                        <div>
+                          <h3 className="text-3xl lg:text-4xl font-bold mb-2">50K+</h3>
+                          <p className="mb-0 font-semibold">
+                            Happy Customers
+                          </p>
+                        </div>
+                        <div>
+                          <h3 className="text-3xl lg:text-4xl font-bold mb-2">99%</h3>
+                          <p className="mb-0 font-semibold">
+                            Success Rate
+                          </p>
+                        </div>
+                      </div>
                     </Slide>
                   </div>
-                </div>
-                <div className="row gy-4">
-                  {services.map((service, index) => (
-                    <div key={service.id} className="col-md-4 col-sm-6">
-                      <Zoom delay={index * 100}>
-                        <div className="card border-0 shadow-sm h-100 p-4 text-center">
-                          <div className="mb-3">
-                            {typeof service.icon === 'string' && service.icon.includes('.svg') ? (
-                              <img
-                                src={service.icon}
-                                width="80"
-                                height="80"
-                                alt={service.title}
-                                className="d-block mx-auto"
-                              />
-                            ) : (
-                              <img
-                                src={service.icon}
-                                width="100"
-                                alt={service.title}
-                                className="d-block mx-auto"
-                              />
-                            )}
+                  <div className="w-full lg:w-1/2 px-4 mt-8 lg:mt-12 pt-8 lg:pt-12">
+                    <div className="grid grid-cols-2 gap-4 lg:gap-6">
+                      <div className="pt-8 lg:pt-12 mt-4 lg:mt-6">
+                        <Zoom>
+                          <div className="bg-gray-100 rounded-xl p-6 mb-4 lg:mb-6 text-center">
+                            <h4 className="text-primary text-xl font-semibold">Quality</h4>
+                            <p className="mb-0 mt-2">Premium Products</p>
                           </div>
-                          <h4 className="mb-3">{service.title}</h4>
-                          <p className="text-muted mb-0">{service.description}</p>
-                        </div>
-                      </Zoom>
+                        </Zoom>
+                      </div>
+                      <div>
+                        <Zoom>
+                          <div className="bg-gray-100 rounded-xl p-6 mb-4 lg:mb-6 text-center">
+                            <h4 className="text-primary text-xl font-semibold">Speed</h4>
+                            <p className="mb-0 mt-2">Fast Delivery</p>
+                          </div>
+                        </Zoom>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </section>
-            </>
-
-            <>
-              {/* Features Section */}
-              <section className="container mt-8 mb-5 pb-3 pb-md-4 pb-lg-5">
-                <div className="row gy-4">
-                  <div className="col-md-6">
-                    <Slide direction="left">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
-                               style={{ width: '60px', height: '60px' }}>
-                            <i className="bi bi-check-circle fs-3"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-4">
-                          <h5>Wide Product Range</h5>
-                          <p className="text-muted mb-0">
-                            Browse through thousands of products across multiple categories 
-                            including fresh produce, dairy, meat, and household essentials.
-                          </p>
-                        </div>
-                      </div>
-                    </Slide>
-                  </div>
-                  <div className="col-md-6">
-                    <Slide direction="right">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
-                               style={{ width: '60px', height: '60px' }}>
-                            <i className="bi bi-shield-check fs-3"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-4">
-                          <h5>Secure Payments</h5>
-                          <p className="text-muted mb-0">
-                            Multiple secure payment options including credit cards, 
-                            digital wallets, and cash on delivery for your convenience.
-                          </p>
-                        </div>
-                      </div>
-                    </Slide>
-                  </div>
-                  <div className="col-md-6">
-                    <Slide direction="left">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
-                               style={{ width: '60px', height: '60px' }}>
-                            <i className="bi bi-truck fs-3"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-4">
-                          <h5>Free Shipping</h5>
-                          <p className="text-muted mb-0">
-                            Enjoy free shipping on orders above Rs 100. Fast and reliable 
-                            delivery to your doorstep within the promised timeframe.
-                          </p>
-                        </div>
-                      </div>
-                    </Slide>
-                  </div>
-                  <div className="col-md-6">
-                    <Slide direction="right">
-                      <div className="d-flex">
-                        <div className="flex-shrink-0">
-                          <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
-                               style={{ width: '60px', height: '60px' }}>
-                            <i className="bi bi-star fs-3"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 ms-4">
-                          <h5>Best Prices</h5>
-                          <p className="text-muted mb-0">
-                            Competitive pricing with regular discounts and special offers. 
-                            Save more with our loyalty program and promotional deals.
-                          </p>
-                        </div>
-                      </div>
-                    </Slide>
                   </div>
                 </div>
-              </section>
-            </>
+              </div>
+            </section>
 
-            <>
-              {/* CTA Section */}
-              <section className="container pb-5 mb-2 mt-8 mb-md-4 mb-lg-5">
-                <div className="position-relative bg-secondaryy rounded-3 py-5 mb-2">
-                  <div className="row pb-2 py-md-3 py-lg-5 px-4 px-lg-0 position-relative zindex-3">
-                    <div className="col-xl-8 col-lg-10 offset-xl-2 offset-lg-1 text-center">
-                      <Slide direction="down" delay={0.5}>
-                        <h2 className="h1 pb-3">Ready to Start Shopping?</h2>
-                        <p className="lead mb-4">
-                          Experience the convenience of online grocery shopping with 
-                          our comprehensive services.
+            {/* Services Grid */}
+            <section className="container mx-auto px-4 mt-16 lg:mt-20 mb-12 pt-8 lg:pt-12">
+              <div className="flex flex-wrap -mx-4">
+                <div className="w-full text-center mb-12">
+                  <Slide direction="down">
+                    <h2 className="text-3xl lg:text-4xl font-bold mb-4">What We Offer</h2>
+                    <p className="text-xl text-gray-600">Comprehensive grocery shopping solutions</p>
+                  </Slide>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {services.map((service, index) => (
+                  <div key={service.id}>
+                    <Zoom delay={index * 100}>
+                      <div className="bg-white border-0 rounded-lg shadow-sm h-full p-6 text-center">
+                        <div className="mb-4">
+                          {typeof service.icon === 'string' && service.icon.includes('.svg') ? (
+                            <img
+                              src={service.icon}
+                              width="80"
+                              height="80"
+                              alt={service.title}
+                              className="block mx-auto"
+                            />
+                          ) : (
+                            <img
+                              src={service.icon}
+                              width="100"
+                              alt={service.title}
+                              className="block mx-auto"
+                            />
+                          )}
+                        </div>
+                        <h4 className="mb-4 text-xl font-semibold">{service.title}</h4>
+                        <p className="text-gray-500 mb-0">{service.description}</p>
+                      </div>
+                    </Zoom>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Features Section */}
+            <section className="container mx-auto px-4 mt-16 lg:mt-20 mb-12 pb-6 lg:pb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Slide direction="left">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <div className="bg-primary text-white rounded-full flex items-center justify-center" 
+                             style={{ width: '60px', height: '60px' }}>
+                          <i className="bi bi-check-circle text-2xl"></i>
+                        </div>
+                      </div>
+                      <div className="flex-grow ml-4">
+                        <h5 className="text-xl font-semibold mb-2">Wide Product Range</h5>
+                        <p className="text-gray-500 mb-0">
+                          Browse through thousands of products across multiple categories 
+                          including fresh produce, dairy, meat, and household essentials.
                         </p>
+                      </div>
+                    </div>
+                  </Slide>
+                </div>
+                <div>
+                  <Slide direction="right">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <div className="bg-primary text-white rounded-full flex items-center justify-center" 
+                             style={{ width: '60px', height: '60px' }}>
+                          <i className="bi bi-shield-check text-2xl"></i>
+                        </div>
+                      </div>
+                      <div className="flex-grow ml-4">
+                        <h5 className="text-xl font-semibold mb-2">Secure Payments</h5>
+                        <p className="text-gray-500 mb-0">
+                          Multiple secure payment options including credit cards, 
+                          digital wallets, and cash on delivery for your convenience.
+                        </p>
+                      </div>
+                    </div>
+                  </Slide>
+                </div>
+                <div>
+                  <Slide direction="left">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <div className="bg-primary text-white rounded-full flex items-center justify-center" 
+                             style={{ width: '60px', height: '60px' }}>
+                          <i className="bi bi-truck text-2xl"></i>
+                        </div>
+                      </div>
+                      <div className="flex-grow ml-4">
+                        <h5 className="text-xl font-semibold mb-2">Free Shipping</h5>
+                        <p className="text-gray-500 mb-0">
+                          Enjoy free shipping on orders above Rs 100. Fast and reliable 
+                          delivery to your doorstep within the promised timeframe.
+                        </p>
+                      </div>
+                    </div>
+                  </Slide>
+                </div>
+                <div>
+                  <Slide direction="right">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <div className="bg-primary text-white rounded-full flex items-center justify-center" 
+                             style={{ width: '60px', height: '60px' }}>
+                          <i className="bi bi-star text-2xl"></i>
+                        </div>
+                      </div>
+                      <div className="flex-grow ml-4">
+                        <h5 className="text-xl font-semibold mb-2">Best Prices</h5>
+                        <p className="text-gray-500 mb-0">
+                          Competitive pricing with regular discounts and special offers. 
+                          Save more with our loyalty program and promotional deals.
+                        </p>
+                      </div>
+                    </div>
+                  </Slide>
+                </div>
+              </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="container mx-auto px-4 pb-12 mb-8 mt-16 lg:mt-20 mb-8 lg:mb-12">
+              <div className="relative bg-gray-100 rounded-xl py-12 mb-8">
+                <div className="flex flex-wrap -mx-4 pb-4 py-6 lg:py-12 px-4 lg:px-0 relative z-10">
+                  <div className="w-full xl:w-8/12 lg:w-10/12 mx-auto text-center">
+                    <Slide direction="down" delay={0.5}>
+                      <h2 className="text-3xl lg:text-4xl font-bold pb-6">Ready to Start Shopping?</h2>
+                      <p className="text-xl lg:text-2xl mb-8 text-gray-600">
+                        Experience the convenience of online grocery shopping with 
+                        our comprehensive services.
+                      </p>
+                      <div className="flex gap-4 justify-center">
                         <Link
                           to="/Shop"
-                          className="btn btn-primary shadow-primary btn-lg me-3"
+                          className="inline-block bg-primary text-white px-8 py-4 rounded-lg shadow-lg hover:bg-primary-dark transition-colors text-lg font-semibold"
                         >
                           Shop Now
                         </Link>
                         <Link
                           to="/Contact"
-                          className="btn btn-outline-primary btn-lg"
+                          className="inline-block border-2 border-primary text-primary px-8 py-4 rounded-lg hover:bg-primary hover:text-white transition-colors text-lg font-semibold"
                         >
                           Contact Us
                         </Link>
-                      </Slide>
-                    </div>
+                      </div>
+                    </Slide>
                   </div>
                 </div>
-              </section>
-            </>
+              </div>
+            </section>
           </>
         )}
       </div>
@@ -316,4 +310,3 @@ const Services = () => {
 };
 
 export default Services;
-

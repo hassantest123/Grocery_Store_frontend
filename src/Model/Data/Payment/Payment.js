@@ -10,7 +10,6 @@ const paymentApi = {
    * @param {Object} data - Payment data
    * @param {Array} data.items - Order items
    * @param {Object} data.shipping_address - Shipping address
-   * @param {string} data.delivery_instructions - Delivery instructions
    * @param {number} data.tax - Tax amount
    * @param {number} data.shipping - Shipping amount
    * @returns {Promise} API response with payment intent

@@ -17,6 +17,7 @@ const MyAcconutSetting = () => {
     phone: "",
   });
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isOffcanvasOpen, setIsOffcanvasOpen] = useState(false);
 
   // Fetch user profile on component mount
   useEffect(() => {
@@ -198,327 +199,347 @@ const MyAcconutSetting = () => {
 
   return (
     <div>
-       <>
-            <ScrollToTop/>
-            </>
-      <>
-        <div>
-          {/* section */}
-          <section>
-            {/* container */}
-            <div className="container">
-              {/* row */}
-              <div className="row">
-                {/* col */}
-                <div className="col-12">
-                  <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
-                    {/* heading */}
-                    <h3 className="fs-5 mb-0">Account Setting</h3>
-                    {/* btn */}
-                    <button
-                      className="btn btn-outline-gray-400 text-muted d-md-none"
-                      type="button"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasAccount"
-                      aria-controls="offcanvasAccount"
-                    >
-                      <i className="fas fa-bars"></i>
-                    </button>
-                  </div>
-                </div>
-                {/* col */}
-                <div className="col-lg-3 col-md-4 col-12 border-end  d-none d-md-block">
-                  <div className="pt-10 pe-lg-10">
-                    {/* nav item */}
-                    <ul className="nav flex-column nav-pills nav-pills-dark">
-                      <li className="nav-item">
-                        <Link
-                          className="nav-link "
-                          aria-current="page"
-                          to="/MyAccountOrder"
-                        >
-                          <i className="fas fa-shopping-bag me-2" />
-                          Your Orders
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link
-                          className="nav-link active"
-                          to="/MyAccountSetting"
-                        >
-                          <i className="fas fa-cog me-2" />
-                          Settings
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/MyAccountAddress">
-                          <i className="fas fa-map-marker-alt me-2" />
-                          Address
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/MyAcconutPaymentMethod">
-                          <i className="fas fa-credit-card me-2" />
-                          Payment Method
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/MyAcconutNotification">
-                          <i className="fas fa-bell me-2" />
-                          Notification
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <hr />
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <button 
-                          className="nav-link w-100 text-start border-0 bg-transparent" 
-                          onClick={handleLogout}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <i className="fas fa-sign-out-alt me-2" />
-                          Log out
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="col-lg-9 col-md-8 col-12">
-                  <div>
-                    {loaderStatus ? (
-                      <div className="loader-container">
-                        {/* <PulseLoader loading={loaderStatus} size={50} color="#0aad0a" /> */}
-                        <MagnifyingGlass
-                          visible={true}
-                          height="100"
-                          width="100"
-                          ariaLabel="magnifying-glass-loading"
-                          wrapperStyle={{}}
-                          wrapperclassName="magnifying-glass-wrapper"
-                          glassColor="#c0efff"
-                          color="#0aad0a"
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="p-6 p-lg-10">
-                          <div className="mb-6">
-                            {/* heading */}
-                            <h2 className="mb-0">Account Setting</h2>
-                          </div>
-                          <div>
-                            {/* heading */}
-                            <h5 className="mb-4">Account details</h5>
-                            <div className="row">
-                              <div className="col-lg-5">
-                                {/* form */}
-                                <form onSubmit={handleSubmit}>
-                                  {/* input */}
-                                  <div className="mb-3">
-                                    <label className="form-label">Name</label>
-                                    <input
-                                      type="text"
-                                      name="name"
-                                      className="form-control"
-                                      placeholder="Enter your name"
-                                      value={formData.name}
-                                      onChange={handleInputChange}
-                                      required
-                                    />
-                                  </div>
-                                  {/* input */}
-                                  <div className="mb-3">
-                                    <label className="form-label">Email</label>
-                                    <input
-                                      type="email"
-                                      name="email"
-                                      className="form-control"
-                                      placeholder="Enter your email"
-                                      value={formData.email}
-                                      onChange={handleInputChange}
-                                      required
-                                    />
-                                  </div>
-                                  {/* input */}
-                                  <div className="mb-5">
-                                    <label className="form-label">Phone</label>
-                                    <input
-                                      type="text"
-                                      name="phone"
-                                      className="form-control"
-                                      placeholder="Enter your phone number"
-                                      value={formData.phone}
-                                      onChange={handleInputChange}
-                                    />
-                                  </div>
-                                  {/* button */}
-                                  <div className="mb-3">
-                                    <button 
-                                      type="submit"
-                                      className="btn btn-primary"
-                                      disabled={isUpdating}
-                                    >
-                                      {isUpdating ? "Saving..." : "Save Details"}
-                                    </button>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                          <hr className="my-10" />
-                          <div className="pe-lg-14">
-                            {/* heading */}
-                            <h5 className="mb-4">Password</h5>
-                            <form className=" row row-cols-1 row-cols-lg-2">
-                              {/* input */}
-                              <div className="mb-3 col">
-                                <label className="form-label">
-                                  New Password
-                                </label>
-                                <input
-                                  type="password"
-                                  className="form-control"
-                                  placeholder="**********"
-                                />
-                              </div>
-                              {/* input */}
-                              <div className="mb-3 col">
-                                <label className="form-label">
-                                  Current Password
-                                </label>
-                                <input
-                                  type="password"
-                                  className="form-control"
-                                  placeholder="**********"
-                                />
-                              </div>
-                              {/* input */}
-                              <div className="col-12">
-                                <p className="mb-4">
-                                  Can’t remember your current password?
-                                  <Link to="#"> Reset your password.</Link>
-                                </p>
-                                <Link to="#" className="btn btn-primary">
-                                  Save Password
-                                </Link>
-                              </div>
-                            </form>
-                          </div>
-                          <hr className="my-10" />
-                          <div>
-                            {/* heading */}
-                            <h5 className="mb-4">Delete Account</h5>
-                            <p className="mb-2">
-                              Would you like to delete your account?
-                            </p>
-                            <p className="mb-5">
-                              This account contain 12 orders, Deleting your
-                              account will remove all the order details
-                              associated with it.
-                            </p>
-                            {/* btn */}
-                            <Link to="#" className="btn btn-outline-danger">
-                              I want to delete my account
-                            </Link>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
+      <ScrollToTop/>
+      <div>
+        {/* section */}
+        <section>
+          {/* container */}
+          <div className="container mx-auto px-4">
+            {/* row */}
+            <div className="flex flex-wrap">
+              {/* Mobile Header */}
+              <div className="w-full">
+                <div className="p-6 flex justify-between items-center md:hidden">
+                  {/* heading */}
+                  <h3 className="text-lg font-medium mb-0">Account Setting</h3>
+                  {/* btn */}
+                  <button
+                    className="px-4 py-2 border border-gray-400 text-gray-600 rounded-lg hover:bg-gray-100 md:hidden"
+                    type="button"
+                    onClick={() => setIsOffcanvasOpen(true)}
+                    aria-controls="offcanvasAccount"
+                  >
+                    <i className="fas fa-bars"></i>
+                  </button>
                 </div>
               </div>
-            </div>
-          </section>
-          {/* modal */}
-          <div
-            className="offcanvas offcanvas-start"
-            tabIndex={-1}
-            id="offcanvasAccount"
-            aria-labelledby="offcanvasAccountLabel"
-          >
-            {/* offcanvas header */}
-            <div className="offcanvas-header">
-              <h5 className="offcanvas-title" id="offcanvasAccountLabel">
-                My Account
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="offcanvas"
-                aria-label="Close"
-              />
-            </div>
-            {/* offcanvas body */}
-            <div className="offcanvas-body">
-              <ul className="nav flex-column nav-pills nav-pills-dark">
-                {/* nav item */}
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    aria-current="page"
-                    href="/MyAccountOrder"
-                  >
-                    <i className="fas fa-shopping-bag me-2" />
-                    Your Orders
-                  </a>
-                </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link " href="/MyAccountSetting">
-                    <i className="fas fa-cog me-2" />
-                    Settings
-                  </a>
-                </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAccountAddress">
-                    <i className="fas fa-map-marker-alt me-2" />
-                    Address
-                  </a>
-                </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAcconutPaymentMethod">
-                    <i className="fas fa-credit-card me-2" />
-                    Payment Method
-                  </a>
-                </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAcconutNotification">
-                    <i className="fas fa-bell me-2" />
-                    Notification
-                  </a>
-                </li>
-              </ul>
-              <hr className="my-6" />
-              <div>
-                {/* nav  */}
-                <ul className="nav flex-column nav-pills nav-pills-dark">
+              {/* Sidebar - Desktop */}
+              <div className="hidden md:block md:w-1/3 lg:w-1/4 border-r border-gray-200">
+                <div className="pt-10 pe-4 lg:pe-10">
                   {/* nav item */}
-                  <li className="nav-item">
-                    <button 
-                      className="nav-link w-100 text-start border-0 bg-transparent" 
-                      onClick={handleLogout}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <i className="fas fa-sign-out-alt me-2" />
-                      Log out
-                    </button>
-                  </li>
-                </ul>
+                  <ul className="flex flex-col space-y-1">
+                    <li>
+                      <Link
+                        className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                        aria-current="page"
+                        to="/MyAccountOrder"
+                      >
+                        <i className="fas fa-shopping-bag mr-2" />
+                        Your Orders
+                      </Link>
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <Link
+                        className="flex items-center px-4 py-2 bg-primary text-white rounded-lg"
+                        to="/MyAccountSetting"
+                      >
+                        <i className="fas fa-cog mr-2" />
+                        Settings
+                      </Link>
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <Link className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" to="/MyAccountAddress">
+                        <i className="fas fa-map-marker-alt mr-2" />
+                        Address
+                      </Link>
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <Link className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" to="/MyAcconutPaymentMethod">
+                        <i className="fas fa-credit-card mr-2" />
+                        Payment Method
+                      </Link>
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <Link className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" to="/MyAcconutNotification">
+                        <i className="fas fa-bell mr-2" />
+                        Notification
+                      </Link>
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <Link
+                        className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                        to="/MyAccountFavorites"
+                      >
+                        <i className="fas fa-heart mr-2" />
+                        Favorites
+                      </Link>
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <hr className="my-4" />
+                    </li>
+                    {/* nav item */}
+                    <li>
+                      <button 
+                        className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left border-0 bg-transparent cursor-pointer" 
+                        onClick={handleLogout}
+                      >
+                        <i className="fas fa-sign-out-alt mr-2" />
+                        Log out
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              {/* Main Content */}
+              <div className="w-full md:w-2/3 lg:w-3/4">
+                <div>
+                  {loaderStatus ? (
+                    <div className="flex justify-center items-center min-h-[400px]">
+                      <MagnifyingGlass
+                        visible={true}
+                        height="100"
+                        width="100"
+                        ariaLabel="magnifying-glass-loading"
+                        wrapperStyle={{}}
+                        wrapperclassName="magnifying-glass-wrapper"
+                        glassColor="#c0efff"
+                        color="#0aad0a"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="p-6 lg:p-10">
+                        <div className="mb-6">
+                          {/* heading */}
+                          <h2 className="mb-0 text-2xl font-bold">Account Setting</h2>
+                        </div>
+                        <div>
+                          {/* heading */}
+                          <h5 className="mb-4 text-lg font-semibold">Account details</h5>
+                          <div className="flex flex-wrap">
+                            <div className="w-full lg:w-5/12">
+                              {/* form */}
+                              <form onSubmit={handleSubmit}>
+                                {/* input */}
+                                <div className="mb-3">
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                                    placeholder="Enter your name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    required
+                                  />
+                                </div>
+                                {/* input */}
+                                <div className="mb-3">
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                  <input
+                                    type="email"
+                                    name="email"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                                    placeholder="Enter your email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    required
+                                  />
+                                </div>
+                                {/* input */}
+                                <div className="mb-5">
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                  <input
+                                    type="text"
+                                    name="phone"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                                    placeholder="Enter your phone number"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                  />
+                                </div>
+                                {/* button */}
+                                <div className="mb-3">
+                                  <button 
+                                    type="submit"
+                                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={isUpdating}
+                                  >
+                                    {isUpdating ? "Saving..." : "Save Details"}
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                        <hr className="my-10 border-gray-200" />
+                        <div className="pe-0 lg:pe-14">
+                          {/* heading */}
+                          <h5 className="mb-4 text-lg font-semibold">Password</h5>
+                          <form className="flex flex-wrap gap-3">
+                            {/* input */}
+                            <div className="mb-3 w-full lg:w-[calc(50%-0.375rem)]">
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                New Password
+                              </label>
+                              <input
+                                type="password"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                                placeholder="**********"
+                              />
+                            </div>
+                            {/* input */}
+                            <div className="mb-3 w-full lg:w-[calc(50%-0.375rem)]">
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Current Password
+                              </label>
+                              <input
+                                type="password"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                                placeholder="**********"
+                              />
+                            </div>
+                            {/* input */}
+                            <div className="w-full">
+                              <p className="mb-4 text-gray-600">
+                                Can't remember your current password?
+                                <Link to="#" className="text-primary hover:underline ml-1"> Reset your password.</Link>
+                              </p>
+                              <Link to="#" className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium">
+                                Save Password
+                              </Link>
+                            </div>
+                          </form>
+                        </div>
+                        <hr className="my-10 border-gray-200" />
+                        <div>
+                          {/* heading */}
+                          <h5 className="mb-4 text-lg font-semibold">Delete Account</h5>
+                          <p className="mb-2 text-gray-600">
+                            Would you like to delete your account?
+                          </p>
+                          <p className="mb-5 text-gray-600">
+                            This account contain 12 orders, Deleting your
+                            account will remove all the order details
+                            associated with it.
+                          </p>
+                          {/* btn */}
+                          <Link to="#" className="inline-block px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors font-medium">
+                            I want to delete my account
+                          </Link>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </>
+        </section>
+        {/* Offcanvas Menu - Mobile */}
+        {isOffcanvasOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black bg-opacity-50"
+              onClick={() => setIsOffcanvasOpen(false)}
+            />
+            {/* Offcanvas Panel */}
+            <div className="absolute left-0 top-0 h-full w-80 bg-white shadow-xl">
+              {/* offcanvas header */}
+              <div className="flex justify-between items-center p-4 border-b border-gray-200">
+                <h5 className="text-lg font-semibold">
+                  My Account
+                </h5>
+                <button
+                  type="button"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  onClick={() => setIsOffcanvasOpen(false)}
+                  aria-label="Close"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              {/* offcanvas body */}
+              <div className="p-4">
+                <ul className="flex flex-col space-y-1">
+                  {/* nav item */}
+                  <li>
+                    <a
+                      className="flex items-center px-4 py-2 bg-primary text-white rounded-lg"
+                      aria-current="page"
+                      href="/MyAccountOrder"
+                    >
+                      <i className="fas fa-shopping-bag mr-2" />
+                      Your Orders
+                    </a>
+                  </li>
+                  {/* nav item */}
+                  <li>
+                    <a className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" href="/MyAccountSetting">
+                      <i className="fas fa-cog mr-2" />
+                      Settings
+                    </a>
+                  </li>
+                  {/* nav item */}
+                  <li>
+                    <a className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" href="/MyAccountAddress">
+                      <i className="fas fa-map-marker-alt mr-2" />
+                      Address
+                    </a>
+                  </li>
+                  {/* nav item */}
+                  <li>
+                    <a className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" href="/MyAcconutPaymentMethod">
+                      <i className="fas fa-credit-card mr-2" />
+                      Payment Method
+                    </a>
+                  </li>
+                  {/* nav item */}
+                  <li>
+                    <a className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors" href="/MyAcconutNotification">
+                      <i className="fas fa-bell mr-2" />
+                      Notification
+                    </a>
+                  </li>
+                  {/* nav item */}
+                  <li>
+                    <a
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                      href="/MyAccountFavorites"
+                    >
+                      <i className="fas fa-heart mr-2" />
+                      Favorites
+                    </a>
+                  </li>
+                </ul>
+                <hr className="my-6 border-gray-200" />
+                <div>
+                  {/* nav  */}
+                  <ul className="flex flex-col space-y-1">
+                    {/* nav item */}
+                    <li>
+                      <button 
+                        className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left border-0 bg-transparent cursor-pointer" 
+                        onClick={handleLogout}
+                      >
+                        <i className="fas fa-sign-out-alt mr-2" />
+                        Log out
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

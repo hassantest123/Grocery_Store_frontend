@@ -67,243 +67,237 @@ const Clients = () => {
         ) : (
           <>
             <ScrollToTop />
-            <>
-              {/* Hero Section */}
-              <section className="position-relative pt-5">
-                <div
-                  className="position-absolute top-0 start-0 w-100 bg-position-bottom-center bg-size-cover bg-repeat-0"
-                  style={{
-                    backgroundImage: "url(assets/img/about/hero-bg.svg)",
-                  }}
-                >
-                  <div className="d-lg-none" style={{ height: 960 }} />
-                  <div className="d-none d-lg-block" style={{ height: 768 }} />
-                </div>
-                <div className="container position-relative zindex-5 pt-5">
-                  <div className="row">
-                    <div className="col-lg-6">
-                      <Slide direction="down">
-                        <h1 className="pb-2 pb-md-3">Our Clients</h1>
-                        <h3 className="pb-2 pb-md-3">Trusted by Leading Brands</h3>
-                        <p
-                          className="fs-xl pb-4 mb-1 mb-md-2 mb-lg-3"
-                          style={{ maxWidth: 526 }}
-                        >
-                          We are proud to serve some of the most recognized names in the 
-                          e-commerce and retail industry. Our clients trust us to deliver 
-                          exceptional grocery shopping experiences.
-                        </p>
-                        <div className="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4">
-                          <div className="col">
-                            <h3 className="h2 mb-2">50+</h3>
-                            <p className="mb-0">
-                              <strong>Active Clients</strong>
-                            </p>
-                          </div>
-                          <div className="col">
-                            <h3 className="h2 mb-2">98%</h3>
-                            <p className="mb-0">
-                              <strong>Client Satisfaction</strong>
-                            </p>
-                          </div>
-                          <div className="col">
-                            <h3 className="h2 mb-2">24/7</h3>
-                            <p className="mb-0">
-                              <strong>Support</strong>
-                            </p>
-                          </div>
-                        </div>
-                      </Slide>
-                    </div>
-                    <div className="col-lg-6 mt-xl-3 pt-5 pt-lg-4">
-                      <div className="row row-cols-2 gx-3 gx-lg-4">
-                        <div className="col pt-lg-5 mt-lg-1">
-                          <Zoom>
-                            <div className="bg-light rounded-3 p-4 mb-3 mb-lg-4 text-center">
-                              <h4 className="text-primary">Partners</h4>
-                              <p className="mb-0">Trusted Relationships</p>
-                            </div>
-                          </Zoom>
-                        </div>
-                        <div className="col">
-                          <Zoom>
-                            <div className="bg-light rounded-3 p-4 mb-3 mb-lg-4 text-center">
-                              <h4 className="text-primary">Success</h4>
-                              <p className="mb-0">Proven Results</p>
-                            </div>
-                          </Zoom>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </>
-
-            <>
-              {/* Clients Grid */}
-              <section className="container mt-8 mb-5 pt-lg-5">
-                <div className="row gy-4 py-xl-2">
-                  <div className="col-md-4">
-                    <div className="info-whydiff">
-                      <div className="section-title-left pt-80">
-                        <h3 className="party" style={{ fontSize: "38px" }}>
-                          <Slide direction="down" delay={0.5}>
-                            Our Valued Clients
-                          </Slide>
-                        </h3>
-                        <p className="mt-3">
-                          We work with industry leaders who trust us to deliver 
-                          exceptional grocery shopping solutions.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-lg-7 offset-lg-1 col-md-8">
-                    <div className="row row-cols-sm-2 row-cols-1 gy-4">
-                      {clients.map((client, index) => (
-                        <div key={client.id} className="col">
-                          <Zoom delay={index * 100}>
-                            <div className="card border-0 shadow-sm h-100 p-4">
-                              <div className="text-center mb-3">
-                                <img
-                                  src={client.logo}
-                                  width={120}
-                                  alt={client.name}
-                                  className="d-block mx-auto mb-3"
-                                  style={{ maxHeight: "80px", objectFit: "contain" }}
-                                />
-                              </div>
-                              <h5 className="text-center mb-2">{client.name}</h5>
-                              <p className="text-muted text-center mb-2">{client.description}</p>
-                              <div className="text-center">
-                                <span className="badge bg-primary">{client.category}</span>
-                              </div>
-                            </div>
-                          </Zoom>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </>
-
-            <>
-              {/* Testimonials Section */}
-              <section className="container mt-8 mb-5 pb-3 pb-md-4 pb-lg-5">
-                <div className="row">
-                  <div className="col-12 text-center mb-5">
+            {/* Hero Section */}
+            <section className="relative pt-12 pb-8 lg:pt-20 lg:pb-16">
+              <div
+                className="absolute top-0 left-0 w-full bg-bottom bg-cover bg-no-repeat"
+                style={{
+                  backgroundImage: "url(assets/img/about/hero-bg.svg)",
+                }}
+              >
+                <div className="block lg:hidden" style={{ height: 960 }} />
+                <div className="hidden lg:block" style={{ height: 768 }} />
+              </div>
+              <div className="container mx-auto px-4 relative z-10 pt-12 lg:pt-20">
+                <div className="flex flex-wrap -mx-4">
+                  <div className="w-full lg:w-1/2 px-4">
                     <Slide direction="down">
-                      <h2 className="h1 mb-3">What Our Clients Say</h2>
-                      <p className="lead">Hear from our satisfied partners</p>
+                      <h1 className="text-4xl lg:text-5xl font-bold pb-4 lg:pb-6">Our Clients</h1>
+                      <h3 className="text-2xl lg:text-3xl font-semibold pb-4 lg:pb-6">Trusted by Leading Brands</h3>
+                      <p
+                        className="text-lg lg:text-xl pb-6 mb-4 lg:mb-6"
+                        style={{ maxWidth: 526 }}
+                      >
+                        We are proud to serve some of the most recognized names in the 
+                        e-commerce and retail industry. Our clients trust us to deliver 
+                        exceptional grocery shopping experiences.
+                      </p>
+                      <div className="grid grid-cols-3 gap-4 pt-8 lg:pt-12 mt-4 lg:mt-8">
+                        <div>
+                          <h3 className="text-3xl lg:text-4xl font-bold mb-2">50+</h3>
+                          <p className="mb-0 font-semibold">
+                            Active Clients
+                          </p>
+                        </div>
+                        <div>
+                          <h3 className="text-3xl lg:text-4xl font-bold mb-2">98%</h3>
+                          <p className="mb-0 font-semibold">
+                            Client Satisfaction
+                          </p>
+                        </div>
+                        <div>
+                          <h3 className="text-3xl lg:text-4xl font-bold mb-2">24/7</h3>
+                          <p className="mb-0 font-semibold">
+                            Support
+                          </p>
+                        </div>
+                      </div>
+                    </Slide>
+                  </div>
+                  <div className="w-full lg:w-1/2 px-4 mt-8 lg:mt-12 pt-8 lg:pt-12">
+                    <div className="grid grid-cols-2 gap-4 lg:gap-6">
+                      <div className="pt-8 lg:pt-12 mt-4 lg:mt-6">
+                        <Zoom>
+                          <div className="bg-gray-100 rounded-xl p-6 mb-4 lg:mb-6 text-center">
+                            <h4 className="text-primary text-xl font-semibold">Partners</h4>
+                            <p className="mb-0 mt-2">Trusted Relationships</p>
+                          </div>
+                        </Zoom>
+                      </div>
+                      <div>
+                        <Zoom>
+                          <div className="bg-gray-100 rounded-xl p-6 mb-4 lg:mb-6 text-center">
+                            <h4 className="text-primary text-xl font-semibold">Success</h4>
+                            <p className="mb-0 mt-2">Proven Results</p>
+                          </div>
+                        </Zoom>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Clients Grid */}
+            <section className="container mx-auto px-4 mt-16 lg:mt-20 mb-12 pt-8 lg:pt-12">
+              <div className="flex flex-wrap -mx-4 gap-8 py-4">
+                <div className="w-full md:w-1/3 px-4">
+                  <div>
+                    <div className="pt-20">
+                      <h3 className="text-3xl lg:text-4xl font-bold mb-4">
+                        <Slide direction="down" delay={0.5}>
+                          Our Valued Clients
+                        </Slide>
+                      </h3>
+                      <p className="mt-4 text-gray-600">
+                        We work with industry leaders who trust us to deliver 
+                        exceptional grocery shopping solutions.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full md:w-2/3 lg:w-7/12 lg:ml-auto px-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {clients.map((client, index) => (
+                      <div key={client.id}>
+                        <Zoom delay={index * 100}>
+                          <div className="bg-white border-0 rounded-lg shadow-sm h-full p-6">
+                            <div className="text-center mb-4">
+                              <img
+                                src={client.logo}
+                                width={120}
+                                alt={client.name}
+                                className="block mx-auto mb-4"
+                                style={{ maxHeight: "80px", objectFit: "contain" }}
+                              />
+                            </div>
+                            <h5 className="text-center mb-2 text-xl font-semibold">{client.name}</h5>
+                            <p className="text-gray-500 text-center mb-3">{client.description}</p>
+                            <div className="text-center">
+                              <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+                                {client.category}
+                              </span>
+                            </div>
+                          </div>
+                        </Zoom>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Testimonials Section */}
+            <section className="container mx-auto px-4 mt-16 lg:mt-20 mb-12 pb-6 lg:pb-8">
+              <div className="flex flex-wrap -mx-4">
+                <div className="w-full text-center mb-12">
+                  <Slide direction="down">
+                    <h2 className="text-3xl lg:text-4xl font-bold mb-4">What Our Clients Say</h2>
+                    <p className="text-xl text-gray-600">Hear from our satisfied partners</p>
+                  </Slide>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <Zoom>
+                    <div className="bg-white border-0 rounded-lg shadow-sm h-full p-6">
+                      <div className="mb-4">
+                        <div className="text-yellow-400 mb-3 flex gap-1">
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                        </div>
+                      </div>
+                      <p className="mb-4 text-gray-700">
+                        "Click Mart has transformed our grocery delivery operations. 
+                        Their platform is intuitive and reliable."
+                      </p>
+                      <div className="flex items-center">
+                        <div>
+                          <h6 className="mb-0 font-semibold">John Smith</h6>
+                          <small className="text-gray-500">CEO, Retail Corp</small>
+                        </div>
+                      </div>
+                    </div>
+                  </Zoom>
+                </div>
+                <div>
+                  <Zoom>
+                    <div className="bg-white border-0 rounded-lg shadow-sm h-full p-6">
+                      <div className="mb-4">
+                        <div className="text-yellow-400 mb-3 flex gap-1">
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                        </div>
+                      </div>
+                      <p className="mb-4 text-gray-700">
+                        "Excellent service and support. Our customers love the 
+                        seamless shopping experience."
+                      </p>
+                      <div className="flex items-center">
+                        <div>
+                          <h6 className="mb-0 font-semibold">Sarah Johnson</h6>
+                          <small className="text-gray-500">Director, FoodMart</small>
+                        </div>
+                      </div>
+                    </div>
+                  </Zoom>
+                </div>
+                <div>
+                  <Zoom>
+                    <div className="bg-white border-0 rounded-lg shadow-sm h-full p-6">
+                      <div className="mb-4">
+                        <div className="text-yellow-400 mb-3 flex gap-1">
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                          <i className="bi bi-star-fill text-xl"></i>
+                        </div>
+                      </div>
+                      <p className="mb-4 text-gray-700">
+                        "The best grocery platform we've worked with. Highly 
+                        recommended for any retail business."
+                      </p>
+                      <div className="flex items-center">
+                        <div>
+                          <h6 className="mb-0 font-semibold">Michael Brown</h6>
+                          <small className="text-gray-500">Founder, QuickShop</small>
+                        </div>
+                      </div>
+                    </div>
+                  </Zoom>
+                </div>
+              </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="container mx-auto px-4 pb-12 mb-8 mt-16 lg:mt-20 mb-8 lg:mb-12">
+              <div className="relative bg-gray-100 rounded-xl py-12 mb-8">
+                <div className="flex flex-wrap -mx-4 pb-4 py-6 lg:py-12 px-4 lg:px-0 relative z-10">
+                  <div className="w-full xl:w-8/12 lg:w-10/12 mx-auto text-center">
+                    <Slide direction="down" delay={0.5}>
+                      <h2 className="text-3xl lg:text-4xl font-bold pb-6">Become Our Partner</h2>
+                      <p className="text-xl lg:text-2xl mb-8 text-gray-600">
+                        Join our growing list of satisfied clients and transform 
+                        your grocery business today.
+                      </p>
+                      <Link
+                        to="/Contact"
+                        className="inline-block bg-primary text-white px-8 py-4 rounded-lg shadow-lg hover:bg-primary-dark transition-colors text-lg font-semibold"
+                      >
+                        Get Started
+                      </Link>
                     </Slide>
                   </div>
                 </div>
-                <div className="row gy-4">
-                  <div className="col-md-4">
-                    <Zoom>
-                      <div className="card border-0 shadow-sm h-100 p-4">
-                        <div className="mb-3">
-                          <div className="text-warning mb-2">
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                          </div>
-                        </div>
-                        <p className="mb-3">
-                          "Click Mart has transformed our grocery delivery operations. 
-                          Their platform is intuitive and reliable."
-                        </p>
-                        <div className="d-flex align-items-center">
-                          <div>
-                            <h6 className="mb-0">John Smith</h6>
-                            <small className="text-muted">CEO, Retail Corp</small>
-                          </div>
-                        </div>
-                      </div>
-                    </Zoom>
-                  </div>
-                  <div className="col-md-4">
-                    <Zoom>
-                      <div className="card border-0 shadow-sm h-100 p-4">
-                        <div className="mb-3">
-                          <div className="text-warning mb-2">
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                          </div>
-                        </div>
-                        <p className="mb-3">
-                          "Excellent service and support. Our customers love the 
-                          seamless shopping experience."
-                        </p>
-                        <div className="d-flex align-items-center">
-                          <div>
-                            <h6 className="mb-0">Sarah Johnson</h6>
-                            <small className="text-muted">Director, FoodMart</small>
-                          </div>
-                        </div>
-                      </div>
-                    </Zoom>
-                  </div>
-                  <div className="col-md-4">
-                    <Zoom>
-                      <div className="card border-0 shadow-sm h-100 p-4">
-                        <div className="mb-3">
-                          <div className="text-warning mb-2">
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                            <i className="bi bi-star-fill"></i>
-                          </div>
-                        </div>
-                        <p className="mb-3">
-                          "The best grocery platform we've worked with. Highly 
-                          recommended for any retail business."
-                        </p>
-                        <div className="d-flex align-items-center">
-                          <div>
-                            <h6 className="mb-0">Michael Brown</h6>
-                            <small className="text-muted">Founder, QuickShop</small>
-                          </div>
-                        </div>
-                      </div>
-                    </Zoom>
-                  </div>
-                </div>
-              </section>
-            </>
-
-            <>
-              {/* CTA Section */}
-              <section className="container pb-5 mb-2 mt-8 mb-md-4 mb-lg-5">
-                <div className="position-relative bg-secondaryy rounded-3 py-5 mb-2">
-                  <div className="row pb-2 py-md-3 py-lg-5 px-4 px-lg-0 position-relative zindex-3">
-                    <div className="col-xl-8 col-lg-10 offset-xl-2 offset-lg-1 text-center">
-                      <Slide direction="down" delay={0.5}>
-                        <h2 className="h1 pb-3">Become Our Partner</h2>
-                        <p className="lead mb-4">
-                          Join our growing list of satisfied clients and transform 
-                          your grocery business today.
-                        </p>
-                        <Link
-                          to="/Contact"
-                          className="btn btn-primary shadow-primary btn-lg"
-                        >
-                          Get Started
-                        </Link>
-                      </Slide>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </>
+              </div>
+            </section>
           </>
         )}
       </div>
@@ -312,4 +306,3 @@ const Clients = () => {
 };
 
 export default Clients;
-

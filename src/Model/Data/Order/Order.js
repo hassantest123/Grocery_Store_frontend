@@ -10,18 +10,27 @@ const orderApi = {
    * @param {Object} data - Order data
    * @param {Array} data.items - Order items
    * @param {Object} data.shipping_address - Shipping address
-   * @param {string} data.delivery_time - Delivery time
-   * @param {string} data.delivery_instructions - Delivery instructions
    * @param {string} data.payment_method - Payment method (stripe, jazzcash, easypaisa, cod)
    * @param {number} data.tax - Tax amount
    * @param {number} data.shipping - Shipping amount
+   * @param {string} data.user_id - User ID (optional, null for guest orders)
    * @returns {Promise} API response with order and payment intent (if applicable)
    */
   createOrder: function (data) {
+    // Build request data
+    const requestData = { ...data };
+    
+    // Only include user_id if it's explicitly provided (for admin-created guest orders)
+    // If user_id is not in data, don't send it - backend will get it from token
+    if ('user_id' in data) {
+      requestData.user_id = data.user_id; // Can be null for guest orders
+    }
+    // If user_id is not in data, it won't be sent, and backend will use token's user_id
+    
     return axiosInstance.request({
       method: 'POST',
       url: '/api/v1/orders',
-      data: data,
+      data: requestData,
     });
   },
 
@@ -64,6 +73,22 @@ const orderApi = {
         payment_status: params.payment_status || null,
         order_status: params.order_status || null,
         user_id: params.user_id || null,
+      },
+    });
+  },
+
+  /**
+   * Update order status (Admin only)
+   * @param {string} orderId - Order ID
+   * @param {string} orderStatus - New order status (pending, confirmed, processing, shipped, delivered, completed, cancelled)
+   * @returns {Promise} API response with updated order
+   */
+  updateOrderStatus: function (orderId, orderStatus) {
+    return axiosInstance.request({
+      method: 'PUT',
+      url: `/api/v1/orders/${orderId}/status`,
+      data: {
+        order_status: orderStatus,
       },
     });
   },

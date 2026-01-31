@@ -7,9 +7,11 @@ import productimage4 from '../../images/product-img-4.jpg'
 import ScrollToTop from "../ScrollToTop";
 import useCartStore from "../../store/cartStore";
 import StripePaymentForm from "../../Component/StripePaymentForm";
+import LocationPickerModal from "../../Component/LocationPickerModal";
 import Swal from "sweetalert2";
 import orderApi from "../../Model/Data/Order/Order";
 import paymentApi from "../../Model/Data/Payment/Payment";
+import uploadApi from "../../Model/Data/Upload/Upload";
 import { loadStripe } from '@stripe/stripe-js';
 import { CardElement } from '@stripe/react-stripe-js';
 
@@ -17,17 +19,25 @@ const ShopCheckOut = () => {
    const navigate = useNavigate();
    const items = useCartStore((state) => state.items);
    const getTotalPrice = useCartStore((state) => state.getTotalPrice);
-   const [user, setUser] = useState(null);
-   const [paymentMethod, setPaymentMethod] = useState('stripe');
-   const [deliveryInstructions, setDeliveryInstructions] = useState('');
-   const [deliveryTime, setDeliveryTime] = useState('');
-   const [tax, setTax] = useState(0);
-   const [shipping, setShipping] = useState(0);
+  const [user, setUser] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('cod'); // Changed default from 'stripe' to 'cod' since stripe is commented out
+  const [tax, setTax] = useState(0);
+   const [shipping, setShipping] = useState(100);
   const [processingOrder, setProcessingOrder] = useState(false);
   const [stripeInstance, setStripeInstance] = useState(null);
   const [stripeElements, setStripeElements] = useState(null);
   const [jazzcashAccountNumber, setJazzcashAccountNumber] = useState('');
-  const [easypaisaAccountNumber, setEasypaisaAccountNumber] = useState('');
+  const [easypaisaPaymentProof, setEasypaisaPaymentProof] = useState(null);
+  const [easypaisaPaymentProofPreview, setEasypaisaPaymentProofPreview] = useState(null);
+  const [uploadingPaymentProof, setUploadingPaymentProof] = useState(false);
+  // Editable shipping address fields
+  const [shippingName, setShippingName] = useState('');
+  const [shippingEmail, setShippingEmail] = useState('');
+  const [shippingPhone, setShippingPhone] = useState('');
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [shippingLatitude, setShippingLatitude] = useState(null);
+  const [shippingLongitude, setShippingLongitude] = useState(null);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const clearCart = useCartStore((state) => state.clearCart);
    
    // Check authentication on component mount and get user data
@@ -35,34 +45,104 @@ const ShopCheckOut = () => {
      // Check for JWT token in localStorage
      const jwtToken = localStorage.getItem('jwt') || localStorage.getItem('token') || localStorage.getItem('authToken');
      
-     if (!jwtToken) {
-       // No token found, redirect to login
-       navigate('/MyAccountSignIn');
-     } else {
-       // Get user data from localStorage
+     if (jwtToken) {
+       // User is logged in - get user data from localStorage
        const userData = localStorage.getItem('user');
        if (userData) {
          try {
-           setUser(JSON.parse(userData));
+           const parsedUser = JSON.parse(userData);
+           setUser(parsedUser);
+           // Initialize shipping address fields with user data
+           setShippingName(parsedUser.name || '');
+           setShippingEmail(parsedUser.email || '');
+           setShippingPhone(parsedUser.phone || '');
+           setShippingAddress(parsedUser.address || '');
          } catch (error) {
            console.error('Error parsing user data:', error);
          }
        }
+     } else {
+       // Guest checkout - user is not logged in
+       // Don't redirect, allow guest checkout
+       setUser(null);
+       // Clear shipping fields for guest to fill manually
+       setShippingName('');
+       setShippingEmail('');
+       setShippingPhone('');
+       setShippingAddress('');
      }
    }, [navigate]);
 
   // Handle Place Order
   const handlePlaceOrder = async () => {
-    // Validation
-    if (!deliveryTime) {
+    const isGuest = !user; // Check if user is logged in
+
+    // Validation - Shipping address
+    // For guest orders: name, phone, address are required
+    // For logged-in users: name, email, phone, address are required
+    if (!shippingName || shippingName.trim() === '') {
       Swal.fire({
         icon: 'warning',
-        title: 'Delivery Time Required',
-        text: 'Please select a delivery time.',
+        title: 'Name Required',
+        text: 'Please enter your full name for delivery.',
       });
       return;
     }
 
+    if (!isGuest) {
+      // For logged-in users, email is required
+      if (!shippingEmail || shippingEmail.trim() === '') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Email Required',
+          text: 'Please enter your email address for delivery.',
+        });
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(shippingEmail.trim())) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Email',
+          text: 'Please enter a valid email address.',
+        });
+        return;
+      }
+    }
+
+    if (!shippingAddress || shippingAddress.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Address Required',
+        text: 'Please enter your delivery address.',
+      });
+      return;
+    }
+
+    if (!shippingPhone || shippingPhone.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Phone Number Required',
+        text: 'Please enter your phone number for delivery.',
+      });
+      return;
+    }
+
+    // Validate phone format (Pakistani format: 11 digits starting with 03)
+    const phone_regex = /^03\d{9}$/;
+    const normalized_shipping_phone = shippingPhone.trim().replace(/[\s-]/g, '');
+    if (!phone_regex.test(normalized_shipping_phone)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Phone Number',
+        text: 'Phone number must be in Pakistani format: 11 digits starting with 03 (e.g., 030xxxxxxxxxxx)',
+      });
+      return;
+    }
+
+    // Validation - Payment method
     if (!paymentMethod) {
       Swal.fire({
         icon: 'warning',
@@ -94,23 +174,14 @@ const ShopCheckOut = () => {
       }
     }
 
-    // Validate Easy Paisa account number
+    // Validate Easy Paisa payment proof
     if (paymentMethod === 'easypaisa') {
-      if (!easypaisaAccountNumber || easypaisaAccountNumber.trim() === '') {
+      // Validate payment proof
+      if (!easypaisaPaymentProof) {
         Swal.fire({
           icon: 'warning',
-          title: 'Easy Paisa Account Required',
-          text: 'Please enter your Easy Paisa mobile number.',
-        });
-        return;
-      }
-      // Validate Easy Paisa number format (11 digits, starting with 03)
-      const easypaisaRegex = /^03\d{9}$/;
-      if (!easypaisaRegex.test(easypaisaAccountNumber.trim())) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Invalid Easy Paisa Number',
-          text: 'Please enter a valid Easy Paisa mobile number (11 digits, starting with 03).',
+          title: 'Payment Proof Required',
+          text: 'Please upload a screenshot of your Easy Paisa payment confirmation.',
         });
         return;
       }
@@ -125,13 +196,19 @@ const ShopCheckOut = () => {
       return;
     }
 
-    if (!user) {
+    // Guest checkout is allowed - no need to check for user
+    // If user is null, it's a guest order which is supported
+
+    // Validate minimum order amount (Rs 200)
+    const totalAmount = getTotalPrice() + tax + shipping;
+    const MINIMUM_ORDER_AMOUNT = 200;
+    
+    if (totalAmount < MINIMUM_ORDER_AMOUNT) {
       Swal.fire({
         icon: 'error',
-        title: 'User Not Found',
-        text: 'Please log in to place an order.',
+        title: 'Minimum Order Amount Required',
+        text: `Minimum order amount is Rs ${MINIMUM_ORDER_AMOUNT}. Your order total is Rs ${totalAmount.toFixed(2)}. Please add more items to your cart.`,
       });
-      navigate('/MyAccountSignIn');
       return;
     }
 
@@ -200,6 +277,53 @@ const ShopCheckOut = () => {
     setProcessingOrder(true);
 
     try {
+      // Upload payment proof for Easy Paisa if provided
+      let paymentProofUrl = null;
+      if (paymentMethod === 'easypaisa' && easypaisaPaymentProof) {
+        try {
+          setUploadingPaymentProof(true);
+          const uploadResponse = await uploadApi.uploadImage(easypaisaPaymentProof, 'payment_proofs');
+          if (uploadResponse?.data?.STATUS === 'SUCCESSFUL') {
+            paymentProofUrl = uploadResponse.data.DB_DATA.url;
+          } else {
+            throw new Error(uploadResponse?.data?.ERROR_DESCRIPTION || 'Failed to upload payment proof');
+          }
+        } catch (uploadError) {
+          console.error('Error uploading payment proof:', uploadError);
+          Swal.fire({
+            icon: 'error',
+            title: 'Upload Error',
+            text: uploadError.response?.data?.ERROR_DESCRIPTION || 'Failed to upload payment proof. Please try again.',
+          });
+          setProcessingOrder(false);
+          setUploadingPaymentProof(false);
+          return;
+        } finally {
+          setUploadingPaymentProof(false);
+        }
+      }
+
+      // Prepare shipping address (use normalized phone from validation above)
+      const shippingAddressData = {
+        name: shippingName.trim(),
+        phone: normalized_shipping_phone, // Use normalized phone from validation
+        address: shippingAddress.trim(),
+      };
+
+      // Add latitude and longitude if available
+      if (shippingLatitude !== null && shippingLongitude !== null) {
+        shippingAddressData.latitude = shippingLatitude;
+        shippingAddressData.longitude = shippingLongitude;
+      }
+
+      // Add email only if user is logged in (for logged-in users)
+      if (!isGuest) {
+        shippingAddressData.email = shippingEmail.trim();
+      } else {
+        // For guest orders, email is optional - use a placeholder or empty
+        shippingAddressData.email = shippingEmail.trim() || `${normalized_shipping_phone}@guest.com`;
+      }
+
       const orderData = {
         items: items.map(item => ({
           product_id: item.id,
@@ -208,20 +332,20 @@ const ShopCheckOut = () => {
           quantity: item.quantity,
           image: item.image,
         })),
-        shipping_address: {
-          name: user.name,
-          email: user.email,
-          phone: user.phone || '',
-          address: user.address || '',
-        },
-        delivery_time: deliveryTime,
-        delivery_instructions: deliveryInstructions,
+        shipping_address: shippingAddressData,
         payment_method: paymentMethod,
         payment_account_number: paymentMethod === 'jazzcash' ? jazzcashAccountNumber.trim() : 
-                                paymentMethod === 'easypaisa' ? easypaisaAccountNumber.trim() : null,
+                                paymentMethod === 'easypaisa' ? '03001244672' : null,
+        payment_proof: paymentProofUrl,
         tax: tax,
         shipping: shipping,
       };
+
+      // For guest orders, explicitly set user_id to null
+      if (isGuest) {
+        orderData.user_id = null;
+      }
+      // For logged-in users, don't send user_id - backend will get it from token
 
       // Create order
       const orderResponse = await orderApi.createOrder(orderData);
@@ -256,17 +380,18 @@ const ShopCheckOut = () => {
         // Confirm payment with Stripe
         // Stripe requires postal_code in billing address
         // For test cards, use any valid postal code format
+        // Use shipping address data (works for both logged-in and guest users)
         const { error, paymentIntent } = await stripeInstance.confirmCardPayment(
           clientSecret,
           {
             payment_method: {
               card: cardElement,
               billing_details: {
-                name: user.name,
-                email: user.email,
-                phone: user.phone || '',
+                name: shippingName.trim(),
+                email: shippingEmail.trim() || (isGuest ? `${shippingPhone.trim()}@guest.com` : ''),
+                phone: shippingPhone.trim() || '',
                 address: {
-                  line1: user.address || '123 Main Street',
+                  line1: shippingAddress.trim() || '123 Main Street',
                   postal_code: '12345', // Test postal code - any 5 digit code works for US cards
                   // For other countries, use appropriate format:
                   // UK: "SW1A1AA" or "SW1A 1AA"
@@ -336,36 +461,28 @@ const ShopCheckOut = () => {
           throw new Error(`Payment status: ${paymentIntent.status}. Please try again.`);
         }
       } else if (paymentMethod === 'easypaisa') {
-        // Easy Paisa payment - initiate payment request
-        const easypaisaResponse = await paymentApi.createEasyPaisaPayment(order._id.toString());
-        
-        if (easypaisaResponse.data.STATUS !== 'SUCCESSFUL') {
-          throw new Error(easypaisaResponse.data.ERROR_DESCRIPTION || 'Failed to initiate Easy Paisa payment');
-        }
-
-        const { payment_form_data, payment_url } = easypaisaResponse.data.DB_DATA;
-        
-        // Create form and submit to Easy Paisa
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = payment_url;
-        form.style.display = 'none';
-
-        // Add all form fields
-        Object.keys(payment_form_data).forEach(key => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = key;
-          input.value = payment_form_data[key];
-          form.appendChild(input);
+        // Easy Paisa payment - order created with payment proof
+        // Payment will be verified manually by admin
+        // No redirect needed, order is already created with payment proof
+        // Show success message with pending verification note
+        clearCart();
+        Swal.fire({
+          icon: 'success',
+          title: 'Order Placed Successfully!',
+          html: `
+            <p>Your order <strong>${order.order_number}</strong> has been placed successfully.</p>
+            <p class="mt-2 text-sm text-gray-600">Your payment proof has been uploaded. Your order will be processed once payment is verified.</p>
+          `,
+          confirmButtonText: isGuest ? 'Continue Shopping' : 'View Orders'
+        }).then(() => {
+          if (isGuest) {
+            navigate('/');
+          } else {
+            navigate('/MyAccountOrder');
+          }
         });
-
-        document.body.appendChild(form);
-        form.submit();
-        
-        // Don't clear cart or show success yet - user will be redirected
-        // Payment will be confirmed via callback
-        return; // Exit early, user will be redirected
+        setProcessingOrder(false);
+        return; // Exit early, success already shown
       } else if (paymentMethod === 'jazzcash') {
         // JazzCash payment - initiate payment request
         const jazzcashResponse = await paymentApi.createJazzCashPayment(order._id.toString());
@@ -410,9 +527,13 @@ const ShopCheckOut = () => {
         icon: 'success',
         title: 'Order Placed Successfully!',
         text: `Your order ${order.order_number} has been placed successfully.`,
-        confirmButtonText: 'View Orders'
+        confirmButtonText: isGuest ? 'Continue Shopping' : 'View Orders'
       }).then(() => {
-        navigate('/MyAccountOrder');
+        if (isGuest) {
+          navigate('/');
+        } else {
+          navigate('/MyAccountOrder');
+        }
       });
 
     } catch (error) {
@@ -431,316 +552,180 @@ const ShopCheckOut = () => {
     <div>
       <div>
         <>
-         <>
+          <>
             <ScrollToTop/>
-            </>
-      <>
-        {/* section */}
-        <section className="mb-lg-14 mb-8 mt-8">
-          <div className="container">
-            {/* row */}
-            <div className="row">
-              {/* col */}
-              <div className="col-12">
-                <div>
-                  <div className="mb-8">
-                    {/* text */}
-                    <h1 className="fw-bold mb-0">Checkout</h1>
+          </>
+          <>
+            {/* section */}
+            <section className="mb-8 lg:mb-14 mt-8">
+              <div className="container mx-auto px-4">
+                {/* Headings Row */}
+                <div className="flex flex-wrap items-center justify-between mb-6 -mx-4">
+                  <div className="px-4">
+                    <h1 className="font-bold mb-0 text-3xl">Checkout</h1>
                   </div>
+                  <div className="px-4">
+                    <h5 className="font-semibold text-lg mb-0">Order Details</h5>
                 </div>
-              </div>
-            </div>
-            <div>
-              {/* row */}
-              <div className="row">
-                <div className="col-lg-7 col-md-12">
-                  {/* accordion */}
-                  <div
-                    className="accordion accordion-flush"
-                    id="accordionFlushExample"
-                  >
-                    {/* accordion item */}
-                    <div className="accordion-item py-4">
-                      <div className="d-flex justify-content-between align-items-center">
-                        {/* heading one */}
-                        <h4 className="fs-5 text-inherit h4">
-                          <i className="feather-icon icon-map-pin me-2 text-muted" />
+                </div>
+                {/* Content Row */}
+                <div className="flex flex-col lg:flex-row items-start gap-6 -mx-4">
+                  {/* Left Column - Checkout */}
+                  <div className="w-full lg:w-7/12 px-4 flex-shrink-0">
+                  <div className="space-y-4">
+                    {/* Delivery Address Section */}
+                    <div className="py-4">
+                      <div className="flex justify-between items-center">
+                        <h4 className="text-xl text-gray-900">
+                          <i className="feather-icon icon-map-pin mr-2 text-gray-500" />
                           Delivery Address
                         </h4>
                       </div>
                       <div className="mt-5">
-                        <div className="row">
-                          <div className="col-12">
-                            {/* form */}
-                            <div className="border p-6 rounded-3">
-                              <div className="mb-3">
-                                <label className="form-check-label text-dark fw-bold">
-                                  Home
+                        <div className="w-full">
+                          <div className="border border-gray-200 p-6 rounded-xl">
+                            <div className="mb-3">
+                              <label className="text-gray-900 font-bold">
+                                Delivery Address
+                              </label>
+                            </div>
+                            {/* Editable address form */}
+                            <div className="space-y-4">
+                              <div className="w-full">
+                                <label htmlFor="shippingName" className="block text-sm font-medium text-gray-700 mb-1">
+                                  Full Name <span className="text-red-500">*</span>
                                 </label>
+                                {user ? (
+                                  <p className="text-gray-900 font-medium">{shippingName}</p>
+                                ) : (
+                                  <input
+                                    type="text"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    id="shippingName"
+                                    placeholder="Enter your full name"
+                                    value={shippingName}
+                                    onChange={(e) => setShippingName(e.target.value)}
+                                    required
+                                  />
+                                )}
                               </div>
-                              {/* address */}
-                              {user ? (
-                                <address className="mb-0">
-                                  <strong>{user.name || 'N/A'}</strong> <br />
-                                  {user.address || 'No address provided'} <br />
-                                  <abbr title="Phone">P: {user.phone || 'N/A'}</abbr>
-                                  <br />
-                                  <span className="text-muted">Email: {user.email || 'N/A'}</span>
-                                </address>
-                              ) : (
-                                <address className="mb-0">
-                                  <strong>Loading...</strong>
-                                </address>
+                              {user && (
+                                <div className="w-full">
+                                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Email <span className="text-red-500">*</span>
+                                  </label>
+                                  <p className="text-gray-900 font-medium">{shippingEmail}</p>
+                                </div>
                               )}
-                              <span className="text-danger mt-3 d-block">
-                                Default address
-                              </span>
+                              <div className="w-full">
+                                <label htmlFor="shippingPhone" className="block text-sm font-medium text-gray-700 mb-1">
+                                  Phone Number <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                  type="tel"
+                                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                  id="shippingPhone"
+                                  placeholder="Phone Number (e.g., 030xxxxxxxxxxx)"
+                                  value={shippingPhone}
+                                  onChange={(e) => {
+                                    // Only allow numbers
+                                    const value = e.target.value.replace(/\D/g, '');
+                                    // Limit to 11 digits
+                                    if (value.length <= 11) {
+                                      setShippingPhone(value);
+                                    }
+                                  }}
+                                  maxLength={11}
+                                  required
+                                />
+                                <small className="text-gray-500 text-xs mt-1 block">
+                                  Format: 11 digits starting with 03 (e.g., 030xxxxxxxxxxx)
+                                </small>
+                              </div>
+                              <div className="w-full">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                  Address <span className="text-red-500">*</span>
+                                </label>
+                                <button
+                                  type="button"
+                                  onClick={() => setIsLocationModalOpen(true)}
+                                  className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2 font-medium text-gray-700 hover:text-primary"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                  {shippingAddress ? 'Change Location' : 'Choose Location on Map'}
+                                </button>
+                                {shippingAddress && (
+                                  <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <div className="flex items-start gap-2">
+                                      <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                      </svg>
+                                      <div className="flex-1">
+                                        <p className="text-sm font-medium text-green-900 mb-1">Selected Location:</p>
+                                        <p className="text-sm text-green-800 mb-2">{shippingAddress}</p>
+                                        {shippingLatitude !== null && shippingLongitude !== null && (
+                                          <div className="mt-2 pt-2 border-t border-green-300">
+                                            <p className="text-xs font-semibold text-green-900 mb-1">Coordinates (Lat, Long):</p>
+                                            <p className="text-xs text-green-700 font-mono">
+                                              {shippingLatitude.toFixed(6)}, {shippingLongitude.toFixed(6)}
+                                            </p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                {!shippingAddress && (
+                                  <p className="text-xs text-gray-500 mt-2">
+                                    Click the button above to select your delivery location on the map
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    {/* accordion item */}
-                    <div className="accordion-item py-4">
-                      <Link
-                        to="#"
-                        className="text-inherit collapsed h5"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#flush-collapseTwo"
-                        aria-expanded="false"
-                        aria-controls="flush-collapseTwo"
-                      >
-                        <i className="feather-icon icon-clock me-2 text-muted" />
-                        Delivery time
-                      </Link>
-                      {/* collapse */}
-                      <div
-                        id="flush-collapseTwo"
-                        className="accordion-collapse collapse "
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        {/* Delivery time options in flex layout */}
-                        <div className="d-flex flex-wrap gap-3 mt-5">
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="deliveryTime"
-                              id="deliveryTime1"
-                              value="Within 2 Hours"
-                              checked={deliveryTime === "Within 2 Hours"}
-                              onChange={(e) => setDeliveryTime(e.target.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="deliveryTime1"
-                            >
-                              Within 2 Hours
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="deliveryTime"
-                              id="deliveryTime2"
-                              value="Within 3 Hours"
-                              checked={deliveryTime === "Within 3 Hours"}
-                              onChange={(e) => setDeliveryTime(e.target.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="deliveryTime2"
-                            >
-                              Within 3 Hours
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="deliveryTime"
-                              id="deliveryTime3"
-                              value="1pm - 2pm"
-                              checked={deliveryTime === "1pm - 2pm"}
-                              onChange={(e) => setDeliveryTime(e.target.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="deliveryTime3"
-                            >
-                              1pm - 2pm
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="deliveryTime"
-                              id="deliveryTime4"
-                              value="2pm - 3pm"
-                              checked={deliveryTime === "2pm - 3pm"}
-                              onChange={(e) => setDeliveryTime(e.target.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="deliveryTime4"
-                            >
-                              2pm - 3pm
-                            </label>
-                          </div>
-                          <div className="form-check">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="deliveryTime"
-                              id="deliveryTime5"
-                              value="3pm - 4pm"
-                              checked={deliveryTime === "3pm - 4pm"}
-                              onChange={(e) => setDeliveryTime(e.target.value)}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor="deliveryTime5"
-                            >
-                              3pm - 4pm
-                            </label>
-                          </div>
-                        </div>
-                        <div className="mt-5 d-flex justify-content-end">
-                          <Link
-                            to="#"
-                            className="btn btn-outline-gray-400 text-muted"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#flush-collapseOne"
-                            aria-expanded="false"
-                            aria-controls="flush-collapseOne"
-                          >
-                            Prev
-                          </Link>
-                          <Link
-                            to="#"
-                            className="btn btn-primary ms-2"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#flush-collapseThree"
-                            aria-expanded="false"
-                            aria-controls="flush-collapseThree"
-                          >
-                            Next
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                    {/* accordion item */}
-                    <div className="accordion-item py-4">
-                      <Link
-                        to="#"
-                        className="text-inherit h5"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#flush-collapseThree"
-                        aria-expanded="false"
-                        aria-controls="flush-collapseThree"
-                      >
-                        <i className="feather-icon icon-shopping-bag me-2 text-muted" />
-                        Delivery instructions
-                        {/* collapse */}{" "}
-                      </Link>
-                      <div
-                        id="flush-collapseThree"
-                        className="accordion-collapse collapse "
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        <div className="mt-5">
-                          <label
-                            htmlFor="DeliveryInstructions"
-                            className="form-label sr-only"
-                          >
-                            Delivery instructions
-                          </label>
-                          <textarea
-                            className="form-control"
-                            id="DeliveryInstructions"
-                            rows={3}
-                            placeholder="Write delivery instructions "
-                            value={deliveryInstructions}
-                            onChange={(e) => setDeliveryInstructions(e.target.value)}
-                          />
-                          <p className="form-text">
-                            Add instructions for how you want your order shopped
-                            and/or delivered
-                          </p>
-                          <div className="mt-5 d-flex justify-content-end">
-                            <Link
-                              to="#"
-                              className="btn btn-outline-gray-400 text-muted"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#flush-collapseTwo"
-                              aria-expanded="false"
-                              aria-controls="flush-collapseTwo"
-                            >
-                              Prev
-                            </Link>
-                            <Link
-                              to="#"
-                              className="btn btn-primary ms-2"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#flush-collapseFour"
-                              aria-expanded="false"
-                              aria-controls="flush-collapseFour"
-                            >
-                              Next
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* accordion item */}
-                    <div className="accordion-item py-4">
-                      <Link
-                        to="#"
-                        className="text-inherit h5"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#flush-collapseFour"
-                        aria-expanded="false"
-                        aria-controls="flush-collapseFour"
-                      >
-                        <i className="feather-icon icon-credit-card me-2 text-muted" />
+                    {/* Payment Method Section */}
+                    <div className="py-4">
+                      <div className="text-gray-900 text-lg font-semibold mb-5">
+                        <i className="feather-icon icon-credit-card mr-2 text-gray-500" />
                         Payment Method
-                        {/* collapse */}{" "}
-                      </Link>
-                      <div
-                        id="flush-collapseFour"
-                        className="accordion-collapse collapse "
-                        data-bs-parent="#accordionFlushExample"
-                      >
-                        <div className="mt-5">
-                          <div>
-                            {/* card */}
-                            <div className="card card-bordered shadow-none mb-2">
-                              {/* card body */}
-                              <div className="card-body p-6">
-                                <div className="d-flex mb-4">
-                                  <div className="form-check ">
-                                    {/* input */}
+                      </div>
+                      <div className="mt-5">
+                        <div>
+                            {/* Credit / Debit Card payment option - Commented out for now, will be used later */}
+                            {/* 
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-2">
+                              <div className="p-6">
+                                <div className="flex items-start mb-4">
+                                  <div className="flex items-center h-5 mt-1">
                                     <input
-                                      className="form-check-input"
+                                      className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
                                       type="radio"
                                       name="paymentMethod"
                                       id="creditdebitcard"
                                       checked={paymentMethod === 'stripe'}
-                                      onChange={() => setPaymentMethod('stripe')}
+                                      onChange={() => {
+                                        setPaymentMethod('stripe');
+                                        // Clear Easy Paisa fields when switching
+                                        setEasypaisaPaymentProof(null);
+                                        setEasypaisaPaymentProofPreview(null);
+                                      }}
                                     />
                                     <label
-                                      className="form-check-label ms-2"
+                                      className="ml-2"
                                       htmlFor="creditdebitcard"
                                     ></label>
                                   </div>
-                                  <div>
-                                    <h5 className="mb-1 h6">
-                                      {" "}
+                                  <div className="ml-3">
+                                    <h5 className="mb-1 text-base font-semibold">
                                       Credit / Debit Card
                                     </h5>
-                                    <p className="mb-0 small">
+                                    <p className="mb-0 text-sm text-gray-600">
                                       Safe money transfer using your bank account. We support Mastercard,
                                       Visa, Discover and Stripe.
                                     </p>
@@ -756,33 +741,36 @@ const ShopCheckOut = () => {
                                 )}
                               </div>
                             </div>
-                            {/* card */}
-                            <div className="card card-bordered shadow-none mb-2">
-                              {/* card body */}
-                              <div className="card-body p-6">
-                                {/* check input */}
-                                <div className="d-flex">
-                                  <div className="form-check">
+                            */}
+                            {/* JazzCash payment option - Commented out for now, will be used later */}
+                            {/* 
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-2">
+                              <div className="p-6">
+                                <div className="flex items-start">
+                                  <div className="flex items-center h-5 mt-1">
                                     <input
-                                      className="form-check-input"
+                                      className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
                                       type="radio"
                                       name="paymentMethod"
                                       id="jazzcash"
                                       checked={paymentMethod === 'jazzcash'}
-                                      onChange={() => setPaymentMethod('jazzcash')}
+                                      onChange={() => {
+                                        setPaymentMethod('jazzcash');
+                                        // Clear Easy Paisa fields when switching
+                                        setEasypaisaPaymentProof(null);
+                                        setEasypaisaPaymentProofPreview(null);
+                                      }}
                                     />
                                     <label
-                                      className="form-check-label ms-2"
+                                      className="ml-2"
                                       htmlFor="jazzcash"
                                     ></label>
                                   </div>
-                                  <div>
-                                    {/* title */}
-                                    <h5 className="mb-1 h6">
-                                      {" "}
+                                  <div className="ml-3">
+                                    <h5 className="mb-1 text-base font-semibold">
                                       JazzCash
                                     </h5>
-                                    <p className="mb-0 small">
+                                    <p className="mb-0 text-sm text-gray-600">
                                       Pay securely using your JazzCash account.
                                       You will be redirected to complete your purchase.
                                     </p>
@@ -790,12 +778,12 @@ const ShopCheckOut = () => {
                                 </div>
                                 {paymentMethod === 'jazzcash' && (
                                   <div className="mt-3">
-                                    <label htmlFor="jazzcashAccountNumber" className="form-label small">
-                                      JazzCash Mobile Number <span className="text-danger">*</span>
+                                    <label htmlFor="jazzcashAccountNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                                      JazzCash Mobile Number <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                       type="tel"
-                                      className="form-control form-control-sm"
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                                       id="jazzcashAccountNumber"
                                       placeholder="03XXXXXXXXX"
                                       value={jazzcashAccountNumber}
@@ -810,100 +798,135 @@ const ShopCheckOut = () => {
                                       maxLength={11}
                                       required
                                     />
-                                    <small className="text-muted">
-                                      Enter your 11-digit JazzCash mobile number (e.g., 03001234567)
+                                    <small className="text-gray-500 text-xs mt-1 block">
+                                      Enter your 11-digit JazzCash mobile number (e.g., 030xxxxxxxxxxx)
                                     </small>
                                   </div>
                                 )}
                               </div>
                             </div>
-                            {/* card */}
-                            <div className="card card-bordered shadow-none mb-2">
-                              {/* card body */}
-                              <div className="card-body p-6">
-                                {/* check input */}
-                                <div className="d-flex">
-                                  <div className="form-check">
+                            */}
+                            {/* Easy Paisa payment option */}
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm mb-2">
+                              <div className="p-6">
+                                <div className="flex items-start">
+                                  <div className="flex items-center h-5 mt-1">
                                     <input
-                                      className="form-check-input"
+                                      className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
                                       type="radio"
                                       name="paymentMethod"
                                       id="easypaisa"
                                       checked={paymentMethod === 'easypaisa'}
-                                      onChange={() => setPaymentMethod('easypaisa')}
+                                      onChange={() => {
+                                        setPaymentMethod('easypaisa');
+                                        // Clear payment proof when switching away and back
+                                        if (paymentMethod !== 'easypaisa') {
+                                          setEasypaisaPaymentProof(null);
+                                          setEasypaisaPaymentProofPreview(null);
+                                        }
+                                      }}
                                     />
                                     <label
-                                      className="form-check-label ms-2"
+                                      className="ml-2"
                                       htmlFor="easypaisa"
                                     ></label>
                                   </div>
-                                  <div>
-                                    {/* title */}
-                                    <h5 className="mb-1 h6">
-                                      {" "}
+                                  <div className="ml-3">
+                                    <h5 className="mb-1 text-base font-semibold">
                                       Easy Paisa
                                     </h5>
-                                    <p className="mb-0 small">
-                                      Pay securely using your Easy Paisa account.
-                                      You will be redirected to complete your purchase.
+                                    <p className="mb-0 text-sm text-gray-600">
+                                      Pay using your Easy Paisa account. Please upload a screenshot of your payment confirmation.
                                     </p>
                                   </div>
                                 </div>
                                 {paymentMethod === 'easypaisa' && (
-                                  <div className="mt-3">
-                                    <label htmlFor="easypaisaAccountNumber" className="form-label small">
-                                      Easy Paisa Mobile Number <span className="text-danger">*</span>
+                                  <div className="mt-4 space-y-3">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                      <p className="text-sm font-medium text-gray-900 mb-2">
+                                        Send payment to this Easy Paisa number:
+                                      </p>
+                                      <p className="text-2xl font-bold text-primary">
+                                        03001244672
+                                      </p>
+                                      <p className="text-xs text-gray-600 mt-2">
+                                        After sending money, please upload a screenshot of your payment confirmation below.
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <label htmlFor="easypaisaPaymentProof" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Payment Proof (Screenshot) <span className="text-red-500">*</span>
                                     </label>
                                     <input
-                                      type="tel"
-                                      className="form-control form-control-sm"
-                                      id="easypaisaAccountNumber"
-                                      placeholder="03XXXXXXXXX"
-                                      value={easypaisaAccountNumber}
+                                        type="file"
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                                        id="easypaisaPaymentProof"
+                                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                                       onChange={(e) => {
-                                        // Only allow numbers
-                                        const value = e.target.value.replace(/\D/g, '');
-                                        // Limit to 11 digits
-                                        if (value.length <= 11) {
-                                          setEasypaisaAccountNumber(value);
+                                          const file = e.target.files[0];
+                                          if (file) {
+                                            setEasypaisaPaymentProof(file);
+                                            // Create preview
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                              setEasypaisaPaymentProofPreview(reader.result);
+                                            };
+                                            reader.readAsDataURL(file);
                                         }
                                       }}
-                                      maxLength={11}
                                       required
                                     />
-                                    <small className="text-muted">
-                                      Enter your 11-digit Easy Paisa mobile number (e.g., 03001234567)
+                                    <small className="text-gray-500 text-xs mt-1 block">
+                                        Upload a screenshot of your Easy Paisa payment confirmation (JPEG, PNG, GIF, WebP - Max 5MB)
                                     </small>
+                                      {easypaisaPaymentProofPreview && (
+                                        <div className="mt-2">
+                                          <img
+                                            src={easypaisaPaymentProofPreview}
+                                            alt="Payment proof preview"
+                                            className="max-w-xs h-32 object-contain border border-gray-300 rounded-lg"
+                                          />
+                                          <button
+                                            type="button"
+                                            className="mt-2 text-sm text-red-600 hover:text-red-800"
+                                            onClick={() => {
+                                              setEasypaisaPaymentProof(null);
+                                              setEasypaisaPaymentProofPreview(null);
+                                            }}
+                                          >
+                                            Remove
+                                          </button>
                                   </div>
                                 )}
                               </div>
                             </div>
-                            {/* card */}
-                            <div className="card card-bordered shadow-none">
-                              <div className="card-body p-6">
-                                {/* check input */}
-                                <div className="d-flex">
-                                  <div className="form-check">
+                                )}
+                              </div>
+                            </div>
+                            {/* Cash on Delivery Card */}
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                              <div className="p-6">
+                                <div className="flex items-start">
+                                  <div className="flex items-center h-5 mt-1">
                                     <input
-                                      className="form-check-input"
+                                      className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
                                       type="radio"
                                       name="paymentMethod"
                                       id="cashonDelivery"
                                       checked={paymentMethod === 'cod'}
-                                      onChange={() => setPaymentMethod('cod')}
+                                      onChange={() => {
+                                        setPaymentMethod('cod');
+                                        // Clear Easy Paisa fields when switching
+                                        setEasypaisaPaymentProof(null);
+                                        setEasypaisaPaymentProofPreview(null);
+                                      }}
                                     />
-                                    <label
-                                      className="form-check-label ms-2"
-                                      htmlFor="cashonDelivery"
-                                    ></label>
                                   </div>
-                                  <div>
-                                    {/* title */}
-                                    <h5 className="mb-1 h6">
-                                      {" "}
+                                  <div className="ml-3">
+                                    <h5 className="mb-1 text-base font-semibold">
                                       Cash on Delivery
                                     </h5>
-                                    <p className="mb-0 small">
+                                    <p className="mb-0 text-sm text-gray-600">
                                       Pay with cash when your order is
                                       delivered.
                                     </p>
@@ -911,175 +934,142 @@ const ShopCheckOut = () => {
                                 </div>
                               </div>
                             </div>
-                            {/* Button */}
-                            <div className="mt-5 d-flex justify-content-end">
-                              <Link
-                                to="#"
-                                className="btn btn-outline-gray-400 text-muted"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#flush-collapseThree"
-                                aria-expanded="false"
-                                aria-controls="flush-collapseThree"
-                              >
-                                Prev
-                              </Link>
-                              <Link
-                                to="#"
-                                className="btn btn-outline-gray-400 text-muted"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  // Scroll to Place Order button
-                                  document.querySelector('.btn-primary.w-100')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                              >
-                                View Order Summary
-                              </Link>
-                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-12 col-md-12 offset-lg-1 col-lg-4">
-                  <div className="mt-4 mt-lg-0">
-                    <div className="card shadow-sm">
-                      <h5 className="px-6 py-4 bg-transparent mb-0">
-                        Order Details
-                      </h5>
-                      <ul className="list-group list-group-flush">
-                        {/* Dynamic cart items */}
-                        {items.length > 0 ? (
-                          items.map((item) => (
-                            <li key={item.id} className="list-group-item px-4 py-3">
-                              <div className="row align-items-center">
-                                <div className="col-2 col-md-2">
-                                  <img
-                                    src={item.image}
-                                    alt={item.name}
-                                    className="img-fluid"
-                                  />
-                                </div>
-                                <div className="col-5 col-md-5">
-                                  <h6 className="mb-0">{item.name}</h6>
-                                  <span>
-                                    <small className="text-muted">{item.category}</small>
-                                  </span>
-                                </div>
-                                <div className="col-2 col-md-2 text-center text-muted">
-                                  <span>{item.quantity}</span>
-                                </div>
-                                <div className="col-3 text-lg-end text-start text-md-end col-md-3">
-                                  <span className="fw-bold">Rs {(item.price * item.quantity).toFixed(2)}</span>
-                                  {item.originalPrice && (
-                                    <div className="text-decoration-line-through text-muted small">
-                                      Rs {(item.originalPrice * item.quantity).toFixed(2)}
-                                    </div>
-                                  )}
-                                </div>
+                  {/* Right Column - Order Details */}
+                  <div className="w-full lg:w-5/12 px-4 lg:sticky lg:top-24 flex-shrink-0">
+                  <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div className="divide-y divide-gray-200">
+                      {/* Dynamic cart items */}
+                      {items.length > 0 ? (
+                        items.map((item) => (
+                          <div key={item.id} className="px-4 py-3">
+                            <div className="flex items-center">
+                              <div className="w-16 flex-shrink-0">
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className="w-full h-auto object-contain rounded"
+                                />
                               </div>
-                            </li>
-                          ))
-                        ) : (
-                          <li className="list-group-item px-4 py-3">
-                            <div className="text-center text-muted">
-                              <p>Your cart is empty</p>
+                              <div className="flex-1 ml-4">
+                                <h6 className="mb-0 font-semibold">{item.name}</h6>
+                                <span className="block">
+                                  <small className="text-gray-500">{item.category}</small>
+                                </span>
+                              </div>
+                              <div className="text-center text-gray-500 w-12">
+                                <span>{item.quantity}</span>
+                              </div>
+                              <div className="text-right w-24">
+                                <span className="font-bold">Rs {(item.price * item.quantity).toFixed(2)}</span>
+                                {item.originalPrice && (
+                                  <div className="line-through text-gray-500 text-sm">
+                                    Rs {(item.originalPrice * item.quantity).toFixed(2)}
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </li>
-                        )}
-                        {/* list group item */}
-                        <li className="list-group-item px-4 py-3">
-                          <div className="d-flex align-items-center justify-content-between   mb-2">
-                            <div>Item Subtotal</div>
-                            <div className="fw-bold">Rs {getTotalPrice().toFixed(2)}</div>
                           </div>
-                          <div className="d-flex align-items-center justify-content-between  ">
-                            <div>
-                              Service Fee{" "}
-                              <i
-                                className="feather-icon icon-info text-muted"
-                                data-bs-toggle="tooltip"
-                                title="Default tooltip"
-                              />
-                            </div>
-                            <div className="fw-bold">Rs 0.00</div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-3">
+                          <div className="text-center text-gray-500">
+                            <p>Your cart is empty</p>
                           </div>
-                        </li>
-                        {/* list group item */}
-                        <li className="list-group-item px-4 py-3">
-                          <div className="d-flex align-items-center justify-content-between fw-bold">
-                            <div>Subtotal</div>
-                            <div>Rs {getTotalPrice().toFixed(2)}</div>
+                        </div>
+                      )}
+                      {/* Order Summary Items */}
+                      <div className="px-4 py-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>Item Subtotal</div>
+                          <div className="font-bold">Rs {getTotalPrice().toFixed(2)}</div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            Service Fee{" "}
+                            <i
+                              className="feather-icon icon-info text-gray-500 ml-1"
+                              title="Default tooltip"
+                            />
                           </div>
-                        </li>
-                        {tax > 0 && (
-                          <li className="list-group-item px-4 py-3">
-                            <div className="d-flex align-items-center justify-content-between">
-                              <div>Tax</div>
-                              <div>Rs {tax.toFixed(2)}</div>
-                            </div>
-                          </li>
-                        )}
-                        {shipping > 0 && (
-                          <li className="list-group-item px-4 py-3">
-                            <div className="d-flex align-items-center justify-content-between">
-                              <div>Shipping</div>
-                              <div>Rs {shipping.toFixed(2)}</div>
-                            </div>
-                          </li>
-                        )}
-                        <li className="list-group-item px-4 py-3">
-                          <div className="d-flex align-items-center justify-content-between fw-bold fs-5">
-                            <div>Total</div>
-                            <div>Rs {(getTotalPrice() + tax + shipping).toFixed(2)}</div>
+                          <div className="font-bold">Rs 0.00</div>
+                        </div>
+                        <div className="flex items-center justify-between mt-2">
+                          <div>Delivery Fee</div>
+                          <div>Rs {shipping.toFixed(2)}</div>
+                        </div>
+                      </div>
+                      {tax > 0 && (
+                        <div className="px-4 py-3">
+                          <div className="flex items-center justify-between">
+                            <div>Tax</div>
+                            <div>Rs {tax.toFixed(2)}</div>
                           </div>
-                        </li>
-                      </ul>
-                      {/* Place Order Button */}
-                      <div className="px-4 py-4">
-                        <button
-                          type="button"
-                          className="btn btn-primary w-100"
-                          disabled={processingOrder || items.length === 0}
-                          onClick={handlePlaceOrder}
-                        >
-                          {processingOrder ? 'Processing...' : 'Place Order'}
-                        </button>
+                        </div>
+                      )}
+                      <div className="px-4 py-3">
+                        <div className="flex items-center justify-between font-bold">
+                          <div>Subtotal</div>
+                          <div>Rs {(getTotalPrice() + shipping).toFixed(2)}</div>
+                        </div>
+                      </div>
+                      <div className="px-4 py-3">
+                        <div className="flex items-center justify-between font-bold text-xl">
+                          <div>Total</div>
+                          <div>Rs {(getTotalPrice() + tax + shipping).toFixed(2)}</div>
+                        </div>
+                        </div>
                       </div>
                     </div>
+                    {/* Place Order Button */}
+                    <div className="px-4 py-4">
+                      <button
+                        type="button"
+                        className="w-full bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={processingOrder || items.length === 0}
+                        onClick={handlePlaceOrder}
+                      >
+                        {processingOrder ? 'Processing...' : 'Place Order'}
+                      </button>
+                  </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-      </>
-      <>
-        <div>
-          {/* Modal */}
+            </section>
+          </>
+          <>
+            <div>
+          {/* Modal - Delete Address (Hidden by default, can be shown with state) */}
           <div
-            className="modal fade"
+            className="hidden"
             id="deleteModal"
             tabIndex={-1}
             aria-labelledby="deleteModalLabel"
             aria-hidden="true"
           >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="deleteModalLabel">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+                <div className="flex justify-between items-center p-6 border-b border-gray-200">
+                  <h5 className="text-lg font-semibold" id="deleteModalLabel">
                     Delete address
                   </h5>
                   <button
                     type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
+                    className="text-gray-400 hover:text-gray-600"
                     aria-label="Close"
-                  />
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
-                <div className="modal-body">
-                  <h6>Are you sure you want to delete this address?</h6>
-                  <p className="mb-6">
+                <div className="p-6">
+                  <h6 className="font-semibold mb-4">Are you sure you want to delete this address?</h6>
+                  <p className="mb-6 text-gray-600">
                     Jitu Chauhan
                     <br />
                     4450 North Avenue Oakland, <br />
@@ -1088,112 +1078,101 @@ const ShopCheckOut = () => {
                     402-776-1106
                   </p>
                 </div>
-                <div className="modal-footer">
+                <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
                   <button
                     type="button"
-                    className="btn btn-outline-gray-400"
-                    data-bs-dismiss="modal"
+                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     Cancel
                   </button>
-                  <button type="button" className="btn btn-danger">
+                  <button type="button" className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                     Delete
                   </button>
                 </div>
               </div>
             </div>
           </div>
-          {/* Modal */}
+          {/* Modal - Add Address (Hidden by default, can be shown with state) */}
           <div
-            className="modal fade"
+            className="hidden"
             id="addAddressModal"
             tabIndex={-1}
             aria-labelledby="addAddressModalLabel"
             aria-hidden="true"
           >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                {/* modal body */}
-                <div className="modal-body p-6">
-                  <div className="d-flex justify-content-between mb-5">
-                    {/* heading */}
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-5">
                     <div>
-                      <h5 className="h6 mb-1" id="addAddressModalLabel">
+                      <h5 className="text-lg font-semibold mb-1" id="addAddressModalLabel">
                         New Shipping Address
                       </h5>
-                      <p className="small mb-0">
+                      <p className="text-sm text-gray-600 mb-0">
                         Add new shipping address for your order delivery.
                       </p>
                     </div>
-                    <div>
-                      {/* button */}
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      />
-                    </div>
+                    <button
+                      type="button"
+                      className="text-gray-400 hover:text-gray-600"
+                      aria-label="Close"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </div>
-                  {/* row */}
-                  <div className="row g-3">
-                    {/* col */}
-                    <div className="col-12">
+                  <div className="space-y-4">
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="First name"
                         aria-label="First name"
                         required
                       />
                     </div>
-                    {/* col */}
-                    <div className="col-12">
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Last name"
                         aria-label="Last name"
                         required
                       />
                     </div>
-                    {/* col */}
-                    <div className="col-12">
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Address Line 1"
                       />
                     </div>
-                    <div className="col-12">
-                      {/* button */}
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Address Line 2"
                       />
                     </div>
-                    <div className="col-12">
-                      {/* button */}
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="City"
                       />
                     </div>
-                    <div className="col-12">
-                      {/* button */}
-                      <select className="form-select">
+                    <div className="w-full">
+                      <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
                         <option selected> India</option>
                         <option value={1}>UK</option>
                         <option value={2}>USA</option>
                         <option value={3}>UAE</option>
                       </select>
                     </div>
-                    <div className="col-12">
-                      {/* button */}
+                    <div className="w-full">
                       <select
-                        className="form-select"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         aria-label="Default select example"
                       >
                         <option selected>Gujarat</option>
@@ -1202,49 +1181,44 @@ const ShopCheckOut = () => {
                         <option value={3}>Abu Dhabi</option>
                       </select>
                     </div>
-                    <div className="col-12">
-                      {/* button */}
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Zip Code"
                       />
                     </div>
-                    <div className="col-12">
-                      {/* button */}
+                    <div className="w-full">
                       <input
                         type="text"
-                        className="form-control"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="Business Name"
                       />
                     </div>
-                    <div className="col-12">
-                      <div className="form-check">
+                    <div className="w-full">
+                      <div className="flex items-center">
                         <input
-                          className="form-check-input"
+                          className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                           type="checkbox"
                           defaultValue
                           id="flexCheckDefault"
                         />
-                        {/* label */}
                         <label
-                          className="form-check-label"
+                          className="ml-2 text-sm text-gray-700"
                           htmlFor="flexCheckDefault"
                         >
                           Set as Default
                         </label>
                       </div>
                     </div>
-                    {/* button */}
-                    <div className="col-12 text-end">
+                    <div className="w-full flex justify-end gap-3 pt-4">
                       <button
                         type="button"
-                        className="btn btn-outline-primary"
-                        data-bs-dismiss="modal"
+                        className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
                       >
                         Cancel
                       </button>
-                      <button className="btn btn-primary" type="button">
+                      <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors" type="button">
                         Save Address
                       </button>
                     </div>
@@ -1256,6 +1230,36 @@ const ShopCheckOut = () => {
         </div>
       </> 
       </>
+      {/* Location Picker Modal */}
+      <LocationPickerModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        onLocationSelect={(location) => {
+          // Save address to state
+          setShippingAddress(location.address);
+          // Save coordinates separately
+          setShippingLatitude(location.latitude);
+          setShippingLongitude(location.longitude);
+          
+          // Close modal
+          setIsLocationModalOpen(false);
+          
+          // Show success message confirming address was saved
+          Swal.fire({
+            icon: 'success',
+            title: 'Location Saved!',
+            html: `
+              <p>Your delivery location has been saved to address.</p>
+              <p class="text-sm text-gray-600 mt-2">${location.address}</p>
+              <p class="text-xs text-gray-500 mt-1">Coordinates: ${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}</p>
+            `,
+            timer: 3000,
+            showConfirmButton: true,
+            confirmButtonText: 'OK'
+          });
+        }}
+        initialAddress={shippingAddress}
+      />
    </div>
      </div>
    );

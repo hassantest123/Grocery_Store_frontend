@@ -1,320 +1,341 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 
 const MyAcconutPaymentMethod = () => {
-  // loading
+  const navigate = useNavigate();
   const [loaderStatus, setLoaderStatus] = useState(true);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
   useEffect(() => {
     setTimeout(() => {
       setLoaderStatus(false);
     }, 1500);
   }, []);
 
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event("authStateChange"));
+    navigate("/");
+  };
+
   return (
-    <div>
-       <>
-            <ScrollToTop/>
-            </>
-      <>
-        <div>
-          <section>
-            {/* container */}
-            <div className="container">
-              {/* row */}
-              <div className="row">
-                {/* col */}
-                <div className="col-12">
-                  <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
-                    {/* heading */}
-                    <h3 className="fs-5 mb-0">Account Setting</h3>
-                    {/* button */}
-                    <button
-                      className="btn btn-outline-gray-400 text-muted d-md-none"
-                      type="button"
-                      data-bs-toggle="offcanvas"
-                      data-bs-target="#offcanvasAccount"
-                      aria-controls="offcanvasAccount"
-                    >
-                      <i className="fas fa-bars"></i>
-                    </button>
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-4 col-12 border-end  d-none d-md-block">
-                  <div className="pt-10 pe-lg-10">
-                    {/* nav */}
-                    <ul className="nav flex-column nav-pills nav-pills-dark">
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link
-                          className="nav-link "
-                          aria-current="page"
-                          to="/MyAccountOrder"
-                        >
-                          <i className="fas fa-shopping-bag me-2" />
-                          Your Orders
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link " to="/MyAccountSetting">
-                          <i className="fas fa-cog me-2" />
-                          Settings
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link " to="/MyAccountAddress">
-                          <i className="fas fa-map-marker-alt me-2" />
-                          Address
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link
-                          className="nav-link active"
-                          to="/MyAcconutPaymentMethod"
-                        >
-                          <i className="fas fa-credit-card me-2" />
-                          Payment Method
-                        </Link>
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link" to="/MyAcconutNotification">
-                          <i className="fas fa-bell me-2" />
-                          Notification
-                        </Link>
-                      </li>{" "}
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <hr />
-                      </li>
-                      {/* nav item */}
-                      <li className="nav-item">
-                        <Link className="nav-link " to="/">
-                          <i className="fas fa-sign-out-alt me-2" />
-                          Log out
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="col-lg-9 col-md-8 col-12">
-                  <div>
-                    {loaderStatus ? (
-                      <div className="loader-container">
-                        {/* <PulseLoader loading={loaderStatus} size={50} color="#0aad0a" /> */}
-                        <MagnifyingGlass
-                          visible={true}
-                          height="100"
-                          width="100"
-                          ariaLabel="magnifying-glass-loading"
-                          wrapperStyle={{}}
-                          wrapperclassName="magnifying-glass-wrapper"
-                          glassColor="#c0efff"
-                          color="#0aad0a"
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="p-6 p-lg-10">
-                          {/* heading */}
-                          <div className="mb-6">
-                            <h2 className="mb-0">Payment Methods</h2>
-                            <p className="text-muted mb-0 mt-2">
-                              Available payment methods for your orders
-                            </p>
-                          </div>
-                          <ul className="list-group list-group-flush">
-                            {/* Stripe Payment Method */}
-                            <li className="list-group-item py-5 px-0">
-                              <div className="d-flex align-items-center">
-                                <div className="d-flex align-items-center flex-grow-1">
-                                  {/* Icon */}
-                                  <div
-                                    className="bg-primary text-white rounded d-inline-flex align-items-center justify-content-center me-4"
-                                    style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}
-                                  >
-                                    <i className="fab fa-cc-stripe"></i>
-                                  </div>
-                                  {/* text */}
-                                  <div>
-                                    <h5 className="mb-1 h6 fw-bold">Stripe</h5>
-                                    <p className="mb-0 small text-muted">
-                                      Credit/Debit Card Payment
-                                    </p>
-                                  </div>
-                                </div>
-                                <div>
-                                  <span className="badge bg-success">Active</span>
-                                </div>
-                              </div>
-                            </li>
-                            
-                            {/* Easy Paisa Payment Method */}
-                            <li className="list-group-item px-0 py-5">
-                              <div className="d-flex align-items-center">
-                                <div className="d-flex align-items-center flex-grow-1">
-                                  {/* Icon */}
-                                  <div
-                                    className="bg-success text-white rounded d-inline-flex align-items-center justify-content-center me-4"
-                                    style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}
-                                  >
-                                    <i className="fas fa-mobile-alt"></i>
-                                  </div>
-                                  {/* text */}
-                                  <div>
-                                    <h5 className="mb-1 h6 fw-bold">Easy Paisa</h5>
-                                    <p className="mb-0 small text-muted">
-                                      Mobile Wallet Payment
-                                    </p>
-                                  </div>
-                                </div>
-                                <div>
-                                  <span className="badge bg-success">Active</span>
-                                </div>
-                              </div>
-                            </li>
-                            
-                            {/* JazzCash Payment Method */}
-                            <li className="list-group-item px-0 py-5">
-                              <div className="d-flex align-items-center">
-                                <div className="d-flex align-items-center flex-grow-1">
-                                  {/* Icon */}
-                                  <div
-                                    className="bg-warning text-white rounded d-inline-flex align-items-center justify-content-center me-4"
-                                    style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}
-                                  >
-                                    <i className="fas fa-wallet"></i>
-                                  </div>
-                                  {/* text */}
-                                  <div>
-                                    <h5 className="mb-1 h6 fw-bold">JazzCash</h5>
-                                    <p className="mb-0 small text-muted">
-                                      Mobile Wallet Payment
-                                    </p>
-                                  </div>
-                                </div>
-                                <div>
-                                  <span className="badge bg-success">Active</span>
-                                </div>
-                              </div>
-                            </li>
-                            
-                            {/* Cash on Delivery Payment Method */}
-                            <li className="list-group-item px-0 py-5 border-bottom">
-                              <div className="d-flex align-items-center">
-                                <div className="d-flex align-items-center flex-grow-1">
-                                  {/* Icon */}
-                                  <div
-                                    className="bg-info text-white rounded d-inline-flex align-items-center justify-content-center me-4"
-                                    style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}
-                                  >
-                                    <i className="fas fa-money-bill-wave"></i>
-                                  </div>
-                                  {/* text */}
-                                  <div>
-                                    <h5 className="mb-1 h6 fw-bold">Cash on Delivery (COD)</h5>
-                                    <p className="mb-0 small text-muted">
-                                      Pay when you receive your order
-                                    </p>
-                                  </div>
-                                </div>
-                                <div>
-                                  <span className="badge bg-success">Active</span>
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </>
-                    )}
-                  </div>
+    <div className="min-h-screen bg-gray-50">
+      <ScrollToTop />
+      
+      <section className="py-8 lg:py-12">
+        <div className="container mx-auto px-4">
+          {/* Mobile Header */}
+          <div className="md:hidden flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Account Setting</h3>
+            <button
+              className="p-2 text-gray-600 hover:text-gray-900"
+              type="button"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              aria-label="Toggle menu"
+            >
+              <i className="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Sidebar Navigation - Desktop */}
+            <div className="hidden md:block w-full md:w-1/4 lg:w-1/5">
+              <div className="pt-4 lg:pt-8 pr-0 lg:pr-8">
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Settings</h4>
+                  <ul className="space-y-1">
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountOrder"
+                      >
+                        <i className="fas fa-shopping-bag w-5 mr-3"></i>
+                        Your Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountSetting"
+                      >
+                        <i className="fas fa-cog w-5 mr-3"></i>
+                        Settings
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountAddress"
+                      >
+                        <i className="fas fa-map-marker-alt w-5 mr-3"></i>
+                        Address
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg"
+                        to="/MyAcconutPaymentMethod"
+                      >
+                        <i className="fas fa-credit-card w-5 mr-3"></i>
+                        Payment Method
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAcconutNotification"
+                      >
+                        <i className="fas fa-bell w-5 mr-3"></i>
+                        Notification
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                        to="/MyAccountFavorites"
+                      >
+                        <i className="fas fa-heart w-5 mr-3"></i>
+                        Favorites
+                      </Link>
+                    </li>
+                    <li className="pt-2 mt-2 border-t border-gray-200">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                      >
+                        <i className="fas fa-sign-out-alt w-5 mr-3"></i>
+                        Log out
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
-          </section>
-          {/* modal */}
+
+            {/* Main Content */}
+            <div className="w-full md:w-3/4 lg:w-4/5">
+              {loaderStatus ? (
+                <div className="flex justify-center items-center min-h-[400px]">
+                  <MagnifyingGlass
+                    visible={true}
+                    height="100"
+                    width="100"
+                    ariaLabel="magnifying-glass-loading"
+                    wrapperStyle={{}}
+                    wrapperclassName="magnifying-glass-wrapper"
+                    glassColor="#c0efff"
+                    color="#0aad0a"
+                  />
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-sm p-6 lg:p-10">
+                  {/* Heading */}
+                  <div className="mb-8">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Payment Methods</h2>
+                    <p className="text-gray-600">
+                      Available payment methods for your orders
+                    </p>
+                  </div>
+
+                  {/* Payment Methods List */}
+                  <div className="space-y-4">
+                    {/* Stripe Payment Method */}
+                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center flex-1">
+                          {/* Icon */}
+                          <div className="bg-primary text-white rounded-lg flex items-center justify-center mr-4" style={{ width: '60px', height: '60px' }}>
+                            <i className="fab fa-cc-stripe text-2xl"></i>
+                          </div>
+                          {/* Text */}
+                          <div>
+                            <h5 className="text-lg font-semibold text-gray-900 mb-1">Stripe</h5>
+                            <p className="text-sm text-gray-600">
+                              Credit/Debit Card Payment
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Easy Paisa Payment Method */}
+                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center flex-1">
+                          {/* Icon */}
+                          <div className="bg-green-500 text-white rounded-lg flex items-center justify-center mr-4" style={{ width: '60px', height: '60px' }}>
+                            <i className="fas fa-mobile-alt text-2xl"></i>
+                          </div>
+                          {/* Text */}
+                          <div>
+                            <h5 className="text-lg font-semibold text-gray-900 mb-1">Easy Paisa</h5>
+                            <p className="text-sm text-gray-600">
+                              Mobile Wallet Payment
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* JazzCash Payment Method */}
+                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center flex-1">
+                          {/* Icon */}
+                          <div className="bg-yellow-500 text-white rounded-lg flex items-center justify-center mr-4" style={{ width: '60px', height: '60px' }}>
+                            <i className="fas fa-wallet text-2xl"></i>
+                          </div>
+                          {/* Text */}
+                          <div>
+                            <h5 className="text-lg font-semibold text-gray-900 mb-1">JazzCash</h5>
+                            <p className="text-sm text-gray-600">
+                              Mobile Wallet Payment
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Cash on Delivery Payment Method */}
+                    <div className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center flex-1">
+                          {/* Icon */}
+                          <div className="bg-blue-500 text-white rounded-lg flex items-center justify-center mr-4" style={{ width: '60px', height: '60px' }}>
+                            <i className="fas fa-money-bill-wave text-2xl"></i>
+                          </div>
+                          {/* Text */}
+                          <div>
+                            <h5 className="text-lg font-semibold text-gray-900 mb-1">Cash on Delivery (COD)</h5>
+                            <p className="text-sm text-gray-600">
+                              Pay when you receive your order
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile Menu Overlay */}
+      {showMobileMenu && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setShowMobileMenu(false)}
+        >
           <div
-            className="offcanvas offcanvas-start"
-            tabIndex={-1}
-            id="offcanvasAccount"
-            aria-labelledby="offcanvasAccountLabel"
+            className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* offcanvas header */}
-            <div className="offcanvas-header">
-              <h5 className="offcanvas-title" id="offcanvasAccountLabel">
-                My Account
-              </h5>
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h5 className="text-lg font-semibold text-gray-900">My Account</h5>
               <button
                 type="button"
-                className="btn-close"
-                data-bs-dismiss="offcanvas"
+                className="p-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setShowMobileMenu(false)}
                 aria-label="Close"
-              />
+              >
+                <i className="fas fa-times text-xl"></i>
+              </button>
             </div>
-            {/* offcanvas body */}
-            <div className="offcanvas-body">
-              <ul className="nav flex-column nav-pills nav-pills-dark">
-                {/* nav item */}
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    aria-current="page"
-                    href="/MyAccountOrder"
+            <div className="p-4">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Settings</h4>
+              <ul className="space-y-1">
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountOrder"
+                    onClick={() => setShowMobileMenu(false)}
                   >
-                    <i className="fas fa-shopping-bag me-2" />
+                    <i className="fas fa-shopping-bag w-5 mr-3"></i>
                     Your Orders
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link " href="/MyAccountSetting">
-                    <i className="fas fa-cog me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountSetting"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-cog w-5 mr-3"></i>
                     Settings
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAccountAddress">
-                    <i className="fas fa-map-marker-alt me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAccountAddress"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-map-marker-alt w-5 mr-3"></i>
                     Address
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAcconutPaymentMethod">
-                    <i className="fas fa-credit-card me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg"
+                    to="/MyAcconutPaymentMethod"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-credit-card w-5 mr-3"></i>
                     Payment Method
-                  </a>
+                  </Link>
                 </li>
-                {/* nav item */}
-                <li className="nav-item">
-                  <a className="nav-link" href="/MyAcconutNotification">
-                    <i className="fas fa-bell me-2" />
+                <li>
+                  <Link
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-primary-light hover:text-primary transition-colors"
+                    to="/MyAcconutNotification"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    <i className="fas fa-bell w-5 mr-3"></i>
                     Notification
-                  </a>
+                  </Link>
                 </li>
               </ul>
-              <hr className="my-6" />
+              <hr className="my-4 border-gray-200" />
               <div>
-                {/* nav  */}
-                <ul className="nav flex-column nav-pills nav-pills-dark">
-                  {/* nav item */}
-                  <li className="nav-item">
-                    <a className="nav-link " href="/">
-                      <i className="fas fa-sign-out-alt me-2" />
+                <ul className="space-y-1">
+                  <li>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setShowMobileMenu(false);
+                      }}
+                      className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                    >
+                      <i className="fas fa-sign-out-alt w-5 mr-3"></i>
                       Log out
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      </>
+      )}
     </div>
   );
 };
